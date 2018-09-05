@@ -44,7 +44,7 @@ const getRequestOptions = exports.getRequestOptions = (defaultOptions, localOpti
   });
 };
 
-exports.default = (defaultOptions, localOptions) => {
+exports.default = async (defaultOptions, localOptions) => {
   const options = getRequestOptions(defaultOptions, localOptions);
   const req = _superagent2.default[options.method](options.url);
 
@@ -58,7 +58,13 @@ exports.default = (defaultOptions, localOptions) => {
   if (options.data) req.send(options.data);
   if (options.credentials) req.withCredentials();
 
-  let out = req.then(res => res); // coerce to promise
+  let out = req.then(res => ({
+    status: res.status,
+    headers: res.headers,
+    body: res.body,
+    text: res.text
+  }));
   if (options.onError) out = out.catch(options.onError);
+  out.cancel = () => req.abort();
   return out;
 };

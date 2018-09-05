@@ -27,7 +27,7 @@ export const getRequestOptions = (defaultOptions, localOptions) => {
   }
 }
 
-export default (defaultOptions, localOptions) => {
+export default async (defaultOptions, localOptions) => {
   const options = getRequestOptions(defaultOptions, localOptions)
   const req = request[options.method](options.url)
 
@@ -41,7 +41,13 @@ export default (defaultOptions, localOptions) => {
   if (options.data) req.send(options.data)
   if (options.credentials) req.withCredentials()
 
-  let out = req.then((res) => res) // coerce to promise
+  let out = req.then((res) => ({
+    status: res.status,
+    headers: res.headers,
+    body: res.body,
+    text: res.text
+  }))
   if (options.onError) out = out.catch(options.onError)
+  out.cancel = () => req.abort()
   return out
 }
