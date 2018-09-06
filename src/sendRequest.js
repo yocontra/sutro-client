@@ -45,6 +45,7 @@ export default async (defaultOptions, localOptions) => {
     req.end((err, res) => {
       if (err) {
         err.res = err.res || res
+        if (options.onError) options.onError(err)
         return reject(err)
       }
       resolve({
@@ -55,7 +56,6 @@ export default async (defaultOptions, localOptions) => {
       })
     })
   })
-  if (options.onError) out = out.catch(options.onError)
   out.cancel = () => req.abort()
   return out
 }
