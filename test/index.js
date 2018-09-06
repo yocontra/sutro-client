@@ -10,7 +10,10 @@ import createClient from '../src'
 const resources = {
   user: {
     create: async ({ data }) => data,
-    find: async () => [ { id: '123' } ],
+    find: async ({ options={} }={}) => {
+      if (options.error) throw new Error('Heh')
+      return [ { id: '123' } ]
+    },
     findById: async ({ userId }) => ({ id: userId }),
     updateById: async ({ userId, data }) => ({ ...data, id: userId }),
     replaceById: async ({ userId, data }) => ({ id: userId, ...data }),
@@ -109,5 +112,13 @@ describe('sutro-client', () => {
     const { body } = await client.user.friend.findById(options)
     const expected = await resources.user.friend.findById(options)
     body.should.eql(expected)
+  })
+
+  it('should report errors properly', (done) => {
+    client.user.find({ options: { error: true } }).catch((err) => {
+      should.exist(err)
+      done()
+      return null
+    })
   })
 })

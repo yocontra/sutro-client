@@ -41,12 +41,20 @@ export default async (defaultOptions, localOptions) => {
   if (options.data) req.send(options.data)
   if (options.credentials) req.withCredentials()
 
-  let out = req.then((res) => ({
-    status: res.status,
-    headers: res.headers,
-    body: res.body,
-    text: res.text
-  }))
+  let out = new Promise((resolve, reject) => {
+    req.end((err, res) => {
+      if (err) {
+        err.res = err.res || res
+        return reject(err)
+      }
+      resolve({
+        status: res.status,
+        headers: res.headers,
+        body: res.body,
+        text: res.text
+      })
+    })
+  })
   if (options.onError) out = out.catch(options.onError)
   out.cancel = () => req.abort()
   return out
