@@ -121,4 +121,15 @@ describe('sutro-client', () => {
       return null
     })
   })
+  it('should report path errors properly', (done) => {
+    const options = { data: { id: '123' } }
+    client.user.friend.create(options)
+      .then(() => {
+        done(new Error('Did not throw!'))
+      })
+      .catch((err) => {
+        should.exist(err)
+        done()
+      })
+  })
 })
