@@ -117,6 +117,7 @@ describe('sutro-client', () => {
   it('should report errors properly', (done) => {
     client.user.find({ options: { error: true } }).catch((err) => {
       should.exist(err)
+      should.exist(err.res)
       done()
       return null
     })

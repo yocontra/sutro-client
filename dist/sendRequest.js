@@ -61,7 +61,7 @@ exports.default = async (defaultOptions, localOptions) => {
   let out = new Promise((resolve, reject) => {
     req.end((err, res) => {
       if (err) {
-        err.res = err.res || res;
+        err.res = err.response || res;
         if (options.onError) options.onError(err);
         return reject(err);
       }
