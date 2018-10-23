@@ -29,50 +29,82 @@ var _lodash4 = _interopRequireDefault(_lodash3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// options that can be resolved if they are functions
-const fns = ['root', 'url', 'credentials', 'headers', 'options', 'data'];
-const result = (fn, arg) => typeof fn === 'function' ? fn(arg) : fn;
-const resolveFunctions = o => (0, _lodash4.default)(o, (v, k) => fns.includes(k) ? result(v, o) : v);
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-const getRequestOptions = exports.getRequestOptions = (defaultOptions, localOptions) => {
-  const resolved = (0, _lodash2.default)({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions));
-  const templated = (0, _templateUrl2.default)(resolved.url, resolved);
-  const url = resolved.root ? (0, _urlJoin2.default)(resolved.root, templated) : templated;
+// options that can be resolved if they are functions
+var fns = ['root', 'url', 'credentials', 'headers', 'options', 'data'];
+var result = function result(fn, arg) {
+  return typeof fn === 'function' ? fn(arg) : fn;
+};
+var resolveFunctions = function resolveFunctions(o) {
+  return (0, _lodash4.default)(o, function (v, k) {
+    return fns.includes(k) ? result(v, o) : v;
+  });
+};
+
+var getRequestOptions = exports.getRequestOptions = function getRequestOptions(defaultOptions, localOptions) {
+  var resolved = (0, _lodash2.default)({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions));
+  var templated = (0, _templateUrl2.default)(resolved.url, resolved);
+  var url = resolved.root ? (0, _urlJoin2.default)(resolved.root, templated) : templated;
   return Object.assign({}, resolved, {
-    url,
+    url: url,
     method: resolved.method.toLowerCase()
   });
 };
 
-exports.default = async (defaultOptions, localOptions) => {
-  const options = getRequestOptions(defaultOptions, localOptions);
-  const req = _superagent2.default[options.method](options.url);
+exports.default = function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(defaultOptions, localOptions) {
+    var options, req, out;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            options = getRequestOptions(defaultOptions, localOptions);
+            req = _superagent2.default[options.method](options.url);
 
-  if (options.plugins) {
-    options.plugins.forEach(p => req.use(p));
-  }
-  if (options.options) {
-    req.query(_qs2.default.stringify(options.options, { strictNullHandling: true }));
-  }
-  if (options.headers) req.set(options.headers);
-  if (options.data) req.send(options.data);
-  if (options.credentials) req.withCredentials();
 
-  let out = new Promise((resolve, reject) => {
-    req.end((err, res) => {
-      if (err) {
-        err.res = err.response || res;
-        if (options.onError) options.onError(err);
-        return reject(err);
+            if (options.plugins) {
+              options.plugins.forEach(function (p) {
+                return req.use(p);
+              });
+            }
+            if (options.options) {
+              req.query(_qs2.default.stringify(options.options, { strictNullHandling: true }));
+            }
+            if (options.headers) req.set(options.headers);
+            if (options.data) req.send(options.data);
+            if (options.credentials) req.withCredentials();
+
+            out = new Promise(function (resolve, reject) {
+              req.end(function (err, res) {
+                if (err) {
+                  err.res = err.response || res;
+                  if (options.onError) options.onError(err);
+                  return reject(err);
+                }
+                resolve({
+                  status: res.status,
+                  headers: res.headers,
+                  body: res.body,
+                  text: res.text
+                });
+              });
+            });
+
+            out.cancel = function () {
+              return req.abort();
+            };
+            return _context.abrupt('return', out);
+
+          case 10:
+          case 'end':
+            return _context.stop();
+        }
       }
-      resolve({
-        status: res.status,
-        headers: res.headers,
-        body: res.body,
-        text: res.text
-      });
-    });
-  });
-  out.cancel = () => req.abort();
-  return out;
-};
+    }, _callee, undefined);
+  }));
+
+  return function (_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}();
