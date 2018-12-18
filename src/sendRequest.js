@@ -8,7 +8,7 @@ import mapValues from 'lodash.mapvalues'
 // options that can be resolved if they are functions
 const fns = [
   'root', 'url', 'credentials',
-  'headers', 'options', 'data'
+  'headers', 'options', 'data', 'simple'
 ]
 const result = (fn, arg) => typeof fn === 'function' ? fn(arg) : fn
 const resolveFunctions = (o) =>
@@ -48,12 +48,14 @@ export default async (defaultOptions, localOptions) => {
         if (options.onError) options.onError(err)
         return reject(err)
       }
-      resolve({
-        status: res.status,
-        headers: res.headers,
-        body: res.body,
-        text: res.text
-      })
+      resolve(options.simple
+        ? res.body || res.text
+        : {
+          status: res.status,
+          headers: res.headers,
+          body: res.body,
+          text: res.text
+        })
     })
   })
   out.cancel = () => req.abort()
