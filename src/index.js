@@ -1,3 +1,4 @@
+import '@babel/polyfill'
 import sendRequest, { getRequestOptions } from './sendRequest'
 
 const replaceWithPromises = (obj, globalOptions) =>

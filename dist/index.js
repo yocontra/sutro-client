@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+require('@babel/polyfill');
+
 var _sendRequest = require('./sendRequest');
 
 var _sendRequest2 = _interopRequireDefault(_sendRequest);
@@ -35,4 +37,4 @@ exports.default = function (resources) {
   return replaceWithPromises(start, options);
 };
 
-module.exports = exports['default'];
+module.exports = exports.default;

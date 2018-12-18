@@ -27,4 +27,4 @@ exports.default = function (endpoint, query) {
   });
 };
 
-module.exports = exports['default'];
+module.exports = exports.default;

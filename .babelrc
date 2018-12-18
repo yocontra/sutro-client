@@ -14,7 +14,7 @@
       {
         "targets": {
           "node": "current",
-          "browsers": ["> 5%", "last 2 versions", "not ie < 11"]
+          "browsers": ["> 1%", "last 2 versions", "not ie < 9"]
         },
         "loose": true,
         "useBuiltIns": "usage"
