@@ -72,7 +72,7 @@ exports.default = function () {
               req.query(_qs2.default.stringify(options.options, { strictNullHandling: true }));
             }
             if (options.includes) {
-              req.query({ includes: options.includes });
+              req.query(_qs2.default.stringify({ includes: options.includes }, { strictNullHandling: true }));
             }
             if (options.headers) req.set(options.headers);
             if (options.data) req.send(options.data);

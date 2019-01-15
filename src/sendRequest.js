@@ -38,7 +38,7 @@ export default async (defaultOptions, localOptions) => {
     req.query(qs.stringify(options.options, { strictNullHandling: true }))
   }
   if (options.includes) {
-    req.query({ includes: options.includes })
+    req.query(qs.stringify({ includes: options.includes }, { strictNullHandling: true }))
   }
   if (options.headers) req.set(options.headers)
   if (options.data) req.send(options.data)
