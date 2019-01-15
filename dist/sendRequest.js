@@ -71,6 +71,9 @@ exports.default = function () {
             if (options.options) {
               req.query(_qs2.default.stringify(options.options, { strictNullHandling: true }));
             }
+            if (options.includes) {
+              req.query({ includes: options.includes });
+            }
             if (options.headers) req.set(options.headers);
             if (options.data) req.send(options.data);
             if (options.credentials) req.withCredentials();
@@ -96,7 +99,7 @@ exports.default = function () {
             };
             return _context.abrupt('return', out);
 
-          case 10:
+          case 11:
           case 'end':
             return _context.stop();
         }

@@ -37,6 +37,9 @@ export default async (defaultOptions, localOptions) => {
   if (options.options) {
     req.query(qs.stringify(options.options, { strictNullHandling: true }))
   }
+  if (options.includes) {
+    req.query({ includes: options.includes })
+  }
   if (options.headers) req.set(options.headers)
   if (options.data) req.send(options.data)
   if (options.credentials) req.withCredentials()
