@@ -15,7 +15,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = function (endpoint, query) {
   var parsed = _url2.default.parse(endpoint);
 
-  var q = _qs2.default.stringify(Object.assign({}, _qs2.default.parse(parsed.query, { strictNullHandling: true }), query), { strictNullHandling: true });
+  var q = _qs2.default.stringify(Object.assign({}, _qs2.default.parse(parsed.query, { strictNullHandling: true }), query), {
+    strictNullHandling: true,
+    serializeDate: function serializeDate(d) {
+      return d.toISOString();
+    }
+  });
 
   return _url2.default.format({
     protocol: parsed.protocol,
