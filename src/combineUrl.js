@@ -7,7 +7,10 @@ export default (endpoint, query) => {
   const q = qs.stringify({
     ...qs.parse(parsed.query, { strictNullHandling: true }),
     ...query
-  }, { strictNullHandling: true })
+  }, {
+    strictNullHandling: true,
+    serializeDate: (d) => d.toISOString()
+  })
 
   return url.format({
     protocol: parsed.protocol,

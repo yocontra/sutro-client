@@ -1,6 +1,6 @@
 {
   "name": "sutro-client",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A simple and sugary client for using sutro APIs.",
   "main": "dist/index.js",
   "keywords": [
