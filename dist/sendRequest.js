@@ -32,7 +32,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 // options that can be resolved if they are functions
-var fns = ['root', 'url', 'credentials', 'headers', 'options', 'data', 'simple'];
+var fns = ['root', 'url', 'credentials', 'retry', 'headers', 'options', 'data', 'simple'];
 var result = function result(fn, arg) {
   return typeof fn === 'function' ? fn(arg) : fn;
 };
@@ -63,6 +63,9 @@ exports.default = function () {
             req = _superagent2.default[options.method](options.url);
 
 
+            if (options.retry) {
+              req.retry(options.retry, options.shouldRetry);
+            }
             if (options.plugins) {
               options.plugins.forEach(function (p) {
                 return req.use(p);
@@ -99,7 +102,7 @@ exports.default = function () {
             };
             return _context.abrupt('return', out);
 
-          case 11:
+          case 12:
           case 'end':
             return _context.stop();
         }

@@ -7,7 +7,7 @@ import mapValues from 'lodash.mapvalues'
 
 // options that can be resolved if they are functions
 const fns = [
-  'root', 'url', 'credentials',
+  'root', 'url', 'credentials', 'retry',
   'headers', 'options', 'data', 'simple'
 ]
 const result = (fn, arg) => typeof fn === 'function' ? fn(arg) : fn
@@ -31,6 +31,9 @@ export default async (defaultOptions, localOptions) => {
   const options = getRequestOptions(defaultOptions, localOptions)
   const req = request[options.method](options.url)
 
+  if (options.retry) {
+    req.retry(options.retry, options.shouldRetry)
+  }
   if (options.plugins) {
     options.plugins.forEach((p) => req.use(p))
   }
