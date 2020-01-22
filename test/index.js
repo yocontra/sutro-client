@@ -1,10 +1,10 @@
-/*global it: true, describe: true */
 /*eslint no-console: 0*/
 
 import should from 'should'
 import sutro from 'sutro'
 import express from 'express'
 import bodyParser from 'body-parser'
+import compress from 'compression'
 import createClient from '../src'
 
 const resources = {
@@ -44,6 +44,11 @@ const server = sutro({
   resources
 })
 app.use(bodyParser.json())
+app.use(compress())
+app.use((req, res, next) => {
+  console.log(req.get('accept-encoding'))
+  next()
+})
 app.use('/api', server)
 const http = app.listen(3030)
 const client = createClient(server.meta, {
