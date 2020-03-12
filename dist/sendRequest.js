@@ -66,6 +66,9 @@ exports.default = function () {
             if (options.retry) {
               req.retry(options.retry, options.shouldRetry);
             }
+            if (options.timeout) {
+              req.timeout(options.timeout);
+            }
             if (options.plugins) {
               options.plugins.forEach(function (p) {
                 return req.use(p);
@@ -102,7 +105,7 @@ exports.default = function () {
             };
             return _context.abrupt('return', out);
 
-          case 12:
+          case 13:
           case 'end':
             return _context.stop();
         }
