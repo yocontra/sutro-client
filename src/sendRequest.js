@@ -34,6 +34,9 @@ export default async (defaultOptions, localOptions) => {
   if (options.retry) {
     req.retry(options.retry, options.shouldRetry)
   }
+  if (options.timeout) {
+    req.timeout(options.timeout)
+  }
   if (options.plugins) {
     options.plugins.forEach((p) => req.use(p))
   }
