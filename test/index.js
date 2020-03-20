@@ -1,7 +1,7 @@
 /*eslint no-console: 0*/
 
 import should from 'should'
-import sutro from 'sutro'
+import sutro, { rewriteLargeRequests } from 'sutro'
 import express from 'express'
 import bodyParser from 'body-parser'
 import compress from 'compression'
@@ -43,7 +43,8 @@ const server = sutro({
   base: '/api',
   resources
 })
-app.use(bodyParser.json())
+app.use(rewriteLargeRequests)
+app.use(bodyParser.json({ limit: '1mb' }))
 app.use(compress())
 app.use((req, res, next) => {
   console.log(req.get('accept-encoding'))
@@ -114,6 +115,20 @@ describe('sutro-client', () => {
   })
   it('should work on user.friend.findById', async () => {
     const options = { userId: '123', friendId: '456' }
+    const { body } = await client.user.friend.findById(options)
+    const expected = await resources.user.friend.findById(options)
+    body.should.eql(expected)
+  })
+  it('should work on user.friend.findById and override', async () => {
+    const bigString = Buffer.alloc(512000, 'a').toString('utf8') // 512kb - well over our 4kb limit
+    const options = {
+      rewriteLargeRequests: true,
+      userId: '123',
+      friendId: '456',
+      options: {
+        filter: bigString
+      }
+    }
     const { body } = await client.user.friend.findById(options)
     const expected = await resources.user.friend.findById(options)
     body.should.eql(expected)

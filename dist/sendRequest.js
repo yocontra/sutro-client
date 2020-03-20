@@ -42,6 +42,10 @@ var resolveFunctions = function resolveFunctions(o) {
   });
 };
 
+var serializeQuery = function serializeQuery(q) {
+  return typeof q === 'string' ? q : _qs2.default.stringify(q, { strictNullHandling: true });
+};
+
 var getRequestOptions = exports.getRequestOptions = function getRequestOptions(defaultOptions, localOptions) {
   var resolved = (0, _lodash2.default)({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions));
   var templated = (0, _templateUrl2.default)(resolved.url, resolved);
@@ -54,13 +58,30 @@ var getRequestOptions = exports.getRequestOptions = function getRequestOptions(d
 
 exports.default = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(defaultOptions, localOptions) {
-    var options, req, out;
+    var options, stringQuery, rewriting, method, req, out;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             options = getRequestOptions(defaultOptions, localOptions);
-            req = _superagent2.default[options.method](options.url);
+
+            // special handling needed for rewriting large queries
+
+            stringQuery = void 0, rewriting = false, method = options.method;
+
+            if (options.options) {
+              stringQuery = serializeQuery(options.options);
+              if (stringQuery.length + options.url.length >= 4000) {
+                if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
+                  method = 'post';
+                  rewriting = true;
+                } else {
+                  console.warn('URL is longer than 4KB - this may cause issues! Try using rewriteLargeRequests.');
+                }
+              }
+            }
+
+            req = _superagent2.default[method](options.url);
 
 
             if (options.retry) {
@@ -75,10 +96,10 @@ exports.default = function () {
               });
             }
             if (options.options) {
-              req.query(_qs2.default.stringify(options.options, { strictNullHandling: true }));
+              rewriting ? req.set('X-HTTP-Method-Override', 'GET').send(options.options) : req.query(stringQuery);
             }
             if (options.includes) {
-              req.query(_qs2.default.stringify({ includes: options.includes }, { strictNullHandling: true }));
+              req.query(serializeQuery({ includes: options.includes }));
             }
             if (options.headers) req.set(options.headers);
             if (options.data) req.send(options.data);
@@ -105,7 +126,7 @@ exports.default = function () {
             };
             return _context.abrupt('return', out);
 
-          case 13:
+          case 15:
           case 'end':
             return _context.stop();
         }

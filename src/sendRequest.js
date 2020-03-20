@@ -16,6 +16,9 @@ const resolveFunctions = (o) =>
     fns.includes(k) ? result(v, o) : v
   )
 
+const serializeQuery = (q) =>
+  typeof q === 'string' ? q : qs.stringify(q, { strictNullHandling: true })
+
 export const getRequestOptions = (defaultOptions, localOptions) => {
   const resolved = merge({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions))
   const templated = template(resolved.url, resolved)
@@ -29,7 +32,22 @@ export const getRequestOptions = (defaultOptions, localOptions) => {
 
 export default async (defaultOptions, localOptions) => {
   const options = getRequestOptions(defaultOptions, localOptions)
-  const req = request[options.method](options.url)
+
+  // special handling needed for rewriting large queries
+  let stringQuery, rewriting = false, method = options.method
+  if (options.options) {
+    stringQuery = serializeQuery(options.options)
+    if (stringQuery.length + options.url.length >= 4000) {
+      if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
+        method = 'post'
+        rewriting = true
+      } else {
+        console.warn('URL is longer than 4KB - this may cause issues! Try using rewriteLargeRequests.')
+      }
+    }
+  }
+
+  const req = request[method](options.url)
 
   if (options.retry) {
     req.retry(options.retry, options.shouldRetry)
@@ -41,10 +59,14 @@ export default async (defaultOptions, localOptions) => {
     options.plugins.forEach((p) => req.use(p))
   }
   if (options.options) {
-    req.query(qs.stringify(options.options, { strictNullHandling: true }))
+    rewriting
+      ? req
+        .set('X-HTTP-Method-Override', 'GET')
+        .send(options.options)
+      : req.query(stringQuery)
   }
   if (options.includes) {
-    req.query(qs.stringify({ includes: options.includes }, { strictNullHandling: true }))
+    req.query(serializeQuery({ includes: options.includes }))
   }
   if (options.headers) req.set(options.headers)
   if (options.data) req.send(options.data)
