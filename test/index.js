@@ -20,21 +20,18 @@ const resources = {
     deleteById: async ({ userId }) => ({ id: userId }),
 
     friend: {
-      create: async ({ userId, data }) => {
-        return {
-          id: userId,
-          friends: [ data.id ]
-        }
-      },
-      find: async ({ userId }) => {
-        return [
-          { id: '123', friends: [ userId ] },
-          { id: '456', friends: [ userId ] }
-        ]
-      },
-      findById: async ({ userId, friendId }) => {
-        return { id: friendId, friends: [ userId ] }
-      }
+      create: async ({ userId, data }) => ({
+        id: userId,
+        friends: [ data.id ]
+      }),
+      find: async ({ userId }) => [
+        { id: '123', friends: [ userId ] },
+        { id: '456', friends: [ userId ] }
+      ],
+      findById: async ({ userId, friendId }) => ({
+        id: friendId,
+        friends: [ userId ]
+      })
     }
   }
 }
@@ -46,10 +43,6 @@ const server = sutro({
 app.use(rewriteLargeRequests)
 app.use(bodyParser.json({ limit: '1mb' }))
 app.use(compress())
-app.use((req, res, next) => {
-  console.log(req.get('accept-encoding'))
-  next()
-})
 app.use('/api', server)
 const http = app.listen(3030)
 const client = createClient(server.meta, {
