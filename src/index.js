@@ -1,4 +1,4 @@
-import '@babel/polyfill'
+import combineUrl from './combineUrl'
 import sendRequest, { getRequestOptions } from './sendRequest'
 
 const replaceWithPromises = (obj, globalOptions) =>
@@ -22,3 +22,5 @@ export default (resources, options = {}) => {
   const start = resources.toJS ? resources.toJS() : resources
   return replaceWithPromises(start, options)
 }
+
+export { combineUrl }

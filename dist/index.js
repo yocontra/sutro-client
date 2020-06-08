@@ -8,12 +8,6 @@ require("core-js/modules/es.array.for-each");
 
 require("core-js/modules/es.array.reduce");
 
-require("core-js/modules/es.function.bind");
-
-require("core-js/modules/es.object.define-properties");
-
-require("core-js/modules/es.object.define-property");
-
 require("core-js/modules/es.object.entries");
 
 require("core-js/modules/es.object.get-own-property-descriptor");
@@ -25,13 +19,19 @@ require("core-js/modules/es.object.keys");
 require("core-js/modules/web.dom-collections.for-each");
 
 exports.__esModule = true;
-exports["default"] = void 0;
+exports.default = void 0;
+
+var _combineUrl = _interopRequireDefault(require("./combineUrl"));
+
+exports.combineUrl = _combineUrl.default;
 
 var _sendRequest = _interopRequireWildcard(require("./sendRequest"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -54,7 +54,7 @@ var replaceWithPromises = function replaceWithPromises(obj, globalOptions) {
       method: v.method
     }, globalOptions);
 
-    var fn = _sendRequest["default"].bind(null, resolvedOptions);
+    var fn = _sendRequest.default.bind(null, resolvedOptions);
 
     fn.getOptions = _sendRequest.getRequestOptions.bind(null, resolvedOptions);
     prev[k] = fn;
@@ -71,5 +71,4 @@ var _default = function _default(resources, options) {
   return replaceWithPromises(start, options);
 };
 
-exports["default"] = _default;
-module.exports = exports.default;
+exports.default = _default;

@@ -5,6 +5,7 @@ import sutro, { rewriteLargeRequests } from 'sutro'
 import express from 'express'
 import bodyParser from 'body-parser'
 import compress from 'compression'
+import getPort from 'get-port'
 import createClient from '../src'
 
 const resources = {
@@ -35,21 +36,25 @@ const resources = {
     }
   }
 }
-const app = express()
-const server = sutro({
-  base: '/api',
-  resources
-})
-app.use(rewriteLargeRequests)
-app.use(bodyParser.json({ limit: '1mb' }))
-app.use(compress())
-app.use('/api', server)
-const http = app.listen(3030)
-const client = createClient(server.meta, {
-  root: 'http://localhost:3030'
-})
+let port, app, server, http, client
 
 describe('sutro-client', () => {
+  before(async () => {
+    port = await getPort()
+    app = express()
+    server = sutro({
+      base: '/api',
+      resources
+    })
+    app.use(rewriteLargeRequests)
+    app.use(bodyParser.json({ limit: '1mb' }))
+    app.use(compress())
+    app.use('/api', server)
+    http = app.listen(port)
+    client = createClient(server.meta, {
+      root: `http://localhost:${port}`
+    })
+  })
   after(() => http.close())
   it('should create from meta', async () => {
     should.exist(client)
@@ -58,9 +63,9 @@ describe('sutro-client', () => {
     const options = { data: { id: '123' } }
     const res = client.user.create.getOptions(options)
     res.should.eql({
-      url: 'http://localhost:3030/api/users',
+      url: `http://localhost:${port}/api/users`,
       method: 'post',
-      root: 'http://localhost:3030',
+      root: `http://localhost:${port}`,
       data: { id: '123' }
     })
   })

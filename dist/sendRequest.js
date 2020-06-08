@@ -10,9 +10,7 @@ require("core-js/modules/es.array.includes");
 
 require("core-js/modules/es.array.reduce");
 
-require("core-js/modules/es.object.define-properties");
-
-require("core-js/modules/es.object.define-property");
+require("core-js/modules/es.object.assign");
 
 require("core-js/modules/es.object.entries");
 
@@ -31,7 +29,7 @@ require("core-js/modules/es.string.includes");
 require("core-js/modules/web.dom-collections.for-each");
 
 exports.__esModule = true;
-exports["default"] = exports.getRequestOptions = void 0;
+exports.default = exports.getRequestOptions = void 0;
 
 require("regenerator-runtime/runtime");
 
@@ -43,7 +41,7 @@ var _templateUrl = _interopRequireDefault(require("template-url"));
 
 var _qs = _interopRequireDefault(require("qs"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -76,16 +74,15 @@ var resolveFunctions = function resolveFunctions(o) {
 };
 
 var serializeQuery = function serializeQuery(q) {
-  return typeof q === 'string' ? q : _qs["default"].stringify(q, {
+  return typeof q === 'string' ? q : _qs.default.stringify(q, {
     strictNullHandling: true
   });
 };
 
 var getRequestOptions = function getRequestOptions(defaultOptions, localOptions) {
-  var resolved = _objectSpread(_objectSpread({}, resolveFunctions(defaultOptions)), resolveFunctions(localOptions));
-
-  var templated = (0, _templateUrl["default"])(resolved.url, resolved);
-  var url = resolved.root ? (0, _urlJoin["default"])(resolved.root, templated) : templated;
+  var resolved = Object.assign({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions));
+  var templated = (0, _templateUrl.default)(resolved.url, resolved);
+  var url = resolved.root ? (0, _urlJoin.default)(resolved.root, templated) : templated;
   return _objectSpread(_objectSpread({}, resolved), {}, {
     url: url,
     method: resolved.method.toLowerCase()
@@ -118,7 +115,7 @@ var _default = /*#__PURE__*/function () {
               }
             }
 
-            req = _superagent["default"][method](options.url);
+            req = _superagent.default[method](options.url);
 
             if (options.retry) {
               req.retry(options.retry, options.shouldRetry);
@@ -183,4 +180,4 @@ var _default = /*#__PURE__*/function () {
   };
 }();
 
-exports["default"] = _default;
+exports.default = _default;

@@ -19,10 +19,11 @@ const serializeQuery = (q) =>
   typeof q === 'string' ? q : qs.stringify(q, { strictNullHandling: true })
 
 export const getRequestOptions = (defaultOptions, localOptions) => {
-  const resolved = {
-    ...resolveFunctions(defaultOptions),
-    ...resolveFunctions(localOptions)
-  }
+  const resolved = Object.assign(
+    {},
+    resolveFunctions(defaultOptions),
+    resolveFunctions(localOptions)
+  )
   const templated = template(resolved.url, resolved)
   const url = resolved.root ? uJoin(resolved.root, templated) : templated
   return {
