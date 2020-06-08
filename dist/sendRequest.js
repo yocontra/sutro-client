@@ -10,8 +10,6 @@ require("core-js/modules/es.array.includes");
 
 require("core-js/modules/es.array.reduce");
 
-require("core-js/modules/es.object.assign");
-
 require("core-js/modules/es.object.entries");
 
 require("core-js/modules/es.object.get-own-property-descriptor");
@@ -40,6 +38,8 @@ var _urlJoin = _interopRequireDefault(require("url-join"));
 var _templateUrl = _interopRequireDefault(require("template-url"));
 
 var _qs = _interopRequireDefault(require("qs"));
+
+var _lodash = _interopRequireDefault(require("lodash.merge"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80,7 +80,7 @@ var serializeQuery = function serializeQuery(q) {
 };
 
 var getRequestOptions = function getRequestOptions(defaultOptions, localOptions) {
-  var resolved = Object.assign({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions));
+  var resolved = (0, _lodash.default)({}, resolveFunctions(defaultOptions), resolveFunctions(localOptions));
   var templated = (0, _templateUrl.default)(resolved.url, resolved);
   var url = resolved.root ? (0, _urlJoin.default)(resolved.root, templated) : templated;
   return _objectSpread(_objectSpread({}, resolved), {}, {

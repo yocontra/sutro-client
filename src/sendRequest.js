@@ -2,6 +2,7 @@ import request from 'superagent'
 import uJoin from 'url-join'
 import template from 'template-url'
 import qs from 'qs'
+import merge from 'lodash.merge'
 
 // options that can be resolved if they are functions
 const fns = [
@@ -19,7 +20,7 @@ const serializeQuery = (q) =>
   typeof q === 'string' ? q : qs.stringify(q, { strictNullHandling: true })
 
 export const getRequestOptions = (defaultOptions, localOptions) => {
-  const resolved = Object.assign(
+  const resolved = merge(
     {},
     resolveFunctions(defaultOptions),
     resolveFunctions(localOptions)

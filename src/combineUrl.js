@@ -4,11 +4,10 @@ import qs from 'qs'
 export default (endpoint, query) => {
   const parsed = url.parse(endpoint)
 
-  const q = qs.stringify(Object.assign(
-    {},
-    qs.parse(parsed.query, { strictNullHandling: true }),
-    query
-  ), {
+  const q = qs.stringify({
+    ...qs.parse(parsed.query, { strictNullHandling: true }),
+    ...query
+  }, {
     strictNullHandling: true,
     serializeDate: (d) => d.toISOString()
   })
