@@ -4,13 +4,15 @@ import template from 'template-url'
 import qs from 'qs'
 import merge from 'lodash.merge'
 
+const maxUrlLength = 4000
+
 // options that can be resolved if they are functions
 const fns = [
   'root', 'url', 'credentials', 'retry',
   'headers', 'options', 'data', 'simple'
 ]
 const result = (fn, arg) => typeof fn === 'function' ? fn(arg) : fn
-const resolveFunctions = (o={}) =>
+const resolveFunctions = (o = {}) =>
   Object.entries(o).reduce((acc, [ k, v ]) => {
     acc[k] = fns.includes(k) ? result(v, o) : v
     return acc
@@ -41,7 +43,7 @@ export default async (defaultOptions, localOptions) => {
   let stringQuery, rewriting = false, method = options.method
   if (options.options) {
     stringQuery = serializeQuery(options.options)
-    if (stringQuery.length + options.url.length >= 4000) {
+    if (stringQuery.length + options.url.length >= maxUrlLength) {
       if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
         method = 'post'
         rewriting = true

@@ -1,22 +1,10 @@
 "use strict";
 
-require("core-js/modules/es.symbol");
-
-require("core-js/modules/es.array.filter");
-
-require("core-js/modules/es.array.for-each");
-
 require("core-js/modules/es.array.reduce");
 
+require("core-js/modules/es.object.assign");
+
 require("core-js/modules/es.object.entries");
-
-require("core-js/modules/es.object.get-own-property-descriptor");
-
-require("core-js/modules/es.object.get-own-property-descriptors");
-
-require("core-js/modules/es.object.keys");
-
-require("core-js/modules/web.dom-collections.for-each");
 
 exports.__esModule = true;
 exports.default = void 0;
@@ -33,12 +21,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var replaceWithPromises = function replaceWithPromises(obj, globalOptions) {
   return Object.entries(obj).reduce(function (prev, _ref) {
     var k = _ref[0],
@@ -49,7 +31,7 @@ var replaceWithPromises = function replaceWithPromises(obj, globalOptions) {
       return prev;
     }
 
-    var resolvedOptions = _objectSpread({
+    var resolvedOptions = Object.assign({
       url: v.path,
       method: v.method
     }, globalOptions);

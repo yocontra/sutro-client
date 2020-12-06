@@ -1,29 +1,26 @@
 {
   "name": "sutro-client",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "A simple and sugary client for using sutro APIs.",
   "main": "dist/index.js",
   "keywords": [
     "sutro",
-    "react",
     "api",
     "rest",
     "http",
     "request",
-    "resource",
-    "shasta",
-    "shastajs"
+    "resource"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shastajs/sutro-client.git"
+    "url": "git+https://github.com/contra/sutro-client.git"
   },
   "author": "Contra <yo@contra.io> (http://contra.io)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shastajs/sutro-client/issues"
+    "url": "https://github.com/contra/sutro-client/issues"
   },
-  "homepage": "https://github.com/shastajs/sutro-client#readme",
+  "homepage": "https://github.com/contra/sutro-client#readme",
   "files": [
     "dist"
   ],
@@ -37,15 +34,15 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/register": "^7.9.0",
-    "@stae/babel-client": "^0.1.13",
-    "@stae/linters": "^0.1.8",
+    "@stae/babel-browser": "^1.0.0",
+    "@stae/linters": "^1.0.0",
     "body-parser": "^1.18.3",
     "compression": "^1.7.4",
-    "eslint": "^6.0.0",
+    "eslint": "^7.0.0",
     "eslint-cli": "^1.0.0",
     "express": "^4.16.3",
     "get-port": "^5.1.1",
-    "mocha": "^7.0.0",
+    "mocha": "^8.0.0",
     "rimraf": "^3.0.0",
     "should": "^13.0.0",
     "sutro": "^5.0.0"
@@ -54,7 +51,7 @@
     "core-js": "3",
     "lodash.merge": "^4.6.2",
     "qs": "^6.5.2",
-    "superagent": "^5.0.0",
+    "superagent": "^6.0.0",
     "template-url": "^1.0.0",
     "url-join": "^4.0.0"
   }

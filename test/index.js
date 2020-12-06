@@ -8,10 +8,12 @@ import compress from 'compression'
 import getPort from 'get-port'
 import createClient from '../src'
 
+const bigUrlLength = 512000
+
 const resources = {
   user: {
     create: async ({ data }) => data,
-    find: async ({ options={} }={}) => {
+    find: async ({ options = {} } = {}) => {
       if (options.error) throw new Error('Heh')
       return [ { id: '123' } ]
     },
@@ -118,7 +120,7 @@ describe('sutro-client', () => {
     body.should.eql(expected)
   })
   it('should work on user.friend.findById and override', async () => {
-    const bigString = Buffer.alloc(512000, 'a').toString('utf8') // 512kb - well over our 4kb limit
+    const bigString = Buffer.alloc(bigUrlLength, 'a').toString('utf8') // 512kb - well over our 4kb limit
     const options = {
       rewriteLargeRequests: true,
       userId: '123',
