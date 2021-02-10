@@ -98,7 +98,10 @@ export default async (defaultOptions, localOptions) => {
       return out
     })
     .catch(async (err) => {
-      if (err.response) err.res = await createResponseObject(err.response)
+      if (err.response) {
+        err.res = await createResponseObject(err.response)
+        err.status = err.response.status
+      }
       if (options.onError) options.onError(err)
       throw err
     })

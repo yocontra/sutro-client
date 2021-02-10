@@ -167,7 +167,7 @@ function _callee8(defaultOptions, localOptions) {
         switch (_context3.prev = _context3.next) {
           case 0:
             if (!err.response) {
-              _context3.next = 4;
+              _context3.next = 5;
               break;
             }
 
@@ -176,12 +176,13 @@ function _callee8(defaultOptions, localOptions) {
 
           case 3:
             err.res = _context3.sent;
+            err.status = err.response.status;
 
-          case 4:
+          case 5:
             if (options.onError) options.onError(err);
             throw err;
 
-          case 6:
+          case 7:
           case "end":
             return _context3.stop();
         }
