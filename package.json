@@ -1,8 +1,9 @@
 {
   "name": "sutro-client",
-  "version": "1.6.2",
+  "version": "2.0.0-beta.0",
   "description": "A simple and sugary client for using sutro APIs.",
-  "main": "dist/index.js",
+  "main": "dist/node.js",
+  "browser": "dist/browser.js",
   "keywords": [
     "sutro",
     "api",
@@ -15,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/contra/sutro-client.git"
   },
-  "author": "Contra <yo@contra.io> (http://contra.io)",
+  "author": "Contra <yo@contra.io> (https://contra.io)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/contra/sutro-client/issues"
@@ -24,12 +25,15 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">= 15"
+  },
   "scripts": {
+    "update-ky": "wget -O src/ky.js 'https://raw.githubusercontent.com/sindresorhus/ky/main/index.js' ",
     "build": "npm run clean && babel src --out-dir dist",
     "clean": "rimraf dist",
-    "lint": "eslint src test",
-    "lint:fix": "eslint src test --fix",
-    "test": "npm run lint && mocha --require @babel/register --recursive --reporter spec"
+    "lint": "eslint src test *.js --fix",
+    "test": "mocha --require @babel/register --recursive --reporter spec && npm run lint"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -48,11 +52,14 @@
     "sutro": "^5.0.0"
   },
   "dependencies": {
+    "abort-controller": "^3.0.0",
     "core-js": "3",
     "lodash.merge": "^4.6.2",
+    "node-fetch": "^2.6.1",
     "qs": "^6.5.2",
-    "superagent": "^6.0.0",
     "template-url": "^1.0.0",
-    "url-join": "^4.0.0"
+    "url-join": "^4.0.0",
+    "web-streams-polyfill": "^3.0.2",
+    "whatwg-fetch": "^3.5.0"
   }
 }

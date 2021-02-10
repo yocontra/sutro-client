@@ -1,12 +1,11 @@
 /*eslint no-console: 0*/
-
 import should from 'should'
 import sutro, { rewriteLargeRequests } from 'sutro'
 import express from 'express'
 import bodyParser from 'body-parser'
 import compress from 'compression'
 import getPort from 'get-port'
-import createClient from '../src'
+import createClient from '../src/node'
 
 const bigUrlLength = 512000
 

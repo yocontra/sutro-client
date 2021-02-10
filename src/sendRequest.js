@@ -1,10 +1,11 @@
-import request from 'superagent'
+import ky from './ky'
 import uJoin from 'url-join'
 import template from 'template-url'
 import qs from 'qs'
 import merge from 'lodash.merge'
 
 const maxUrlLength = 4000
+const oneDay = 86400000
 
 // options that can be resolved if they are functions
 const fns = [
@@ -36,12 +37,32 @@ export const getRequestOptions = (defaultOptions, localOptions) => {
   }
 }
 
+const createResponseObject = async (res) => {
+  const text = await res.text()
+  let body
+  try {
+    body = JSON.parse(text)
+  } catch (err) {
+    // do nothing
+  }
+  return {
+    ok: res.ok,
+    status: res.status,
+    headers: res.headers,
+    body, text
+  }
+}
 export default async (defaultOptions, localOptions) => {
   const options = getRequestOptions(defaultOptions, localOptions)
 
+  const qs = {
+    ...options.options,
+    includes: options.includes || options.options?.includes
+  }
+
   // special handling needed for rewriting large queries
   let stringQuery, rewriting = false, method = options.method
-  if (options.options) {
+  if (Object.keys(qs).length !== 0) {
     stringQuery = serializeQuery(options.options)
     if (stringQuery.length + options.url.length >= maxUrlLength) {
       if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
@@ -53,48 +74,34 @@ export default async (defaultOptions, localOptions) => {
     }
   }
 
-  const req = request[method](options.url)
+  const headers = { ...options.headers }
+  if (rewriting) headers['X-HTTP-Method-Override'] = 'GET'
 
-  if (options.retry) {
-    req.retry(options.retry, options.shouldRetry)
-  }
-  if (options.timeout) {
-    req.timeout(options.timeout)
-  }
-  if (options.plugins) {
-    options.plugins.forEach((p) => req.use(p))
-  }
-  if (options.options) {
-    rewriting
-      ? req
-        .set('X-HTTP-Method-Override', 'GET')
-        .send(options.options)
-      : req.query(stringQuery)
-  }
-  if (options.includes) {
-    req.query(serializeQuery({ includes: options.includes }))
-  }
-  if (options.headers) req.set(options.headers)
-  if (options.data) req.send(options.data)
-  if (options.credentials) req.withCredentials()
+  const controller = new AbortController()
+  const { signal } = controller
 
-  const out = new Promise((resolve, reject) => {
-    req.end((err, res) => {
-      if (err) {
-        err.res = err.response || res
-        if (options.onError) options.onError(err)
-        return reject(err)
-      }
-      resolve(options.simple
-        ? res.body || res.text
-        : {
-          status: res.status,
-          headers: res.headers,
-          body: res.body,
-          text: res.text
-        })
-    })
+  const out = ky(options.url, {
+    method,
+    signal,
+    hooks: options.hooks,
+    retry: options.retry,
+    credentials: options.credentials,
+    timeout: options.timeout || oneDay,
+    headers,
+    searchParams: rewriting ? undefined : stringQuery,
+    json: rewriting ? qs : options.data
   })
-  out.cancel = () => req.abort()
+    .then(async (res) => {
+      const out = await createResponseObject(res)
+      if (options.simple) return out.body || out.text
+      return out
+    })
+    .catch(async (err) => {
+      if (err.response) err.res = await createResponseObject(err.response)
+      if (options.onError) options.onError(err)
+      throw err
+    })
+
+  out.abort = () => controller.abort()
   return out
 }

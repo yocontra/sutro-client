@@ -1,29 +1,27 @@
 "use strict";
 
-require("core-js/modules/es.array.for-each");
+require("core-js/modules/es.array.includes.js");
 
-require("core-js/modules/es.array.includes");
+require("core-js/modules/es.array.reduce.js");
 
-require("core-js/modules/es.array.reduce");
+require("core-js/modules/es.object.assign.js");
 
-require("core-js/modules/es.object.assign");
+require("core-js/modules/es.object.entries.js");
 
-require("core-js/modules/es.object.entries");
+require("core-js/modules/es.object.keys.js");
 
-require("core-js/modules/es.object.to-string");
+require("core-js/modules/es.object.to-string.js");
 
-require("core-js/modules/es.promise");
+require("core-js/modules/es.promise.js");
 
-require("core-js/modules/es.string.includes");
-
-require("core-js/modules/web.dom-collections.for-each");
+require("core-js/modules/es.string.includes.js");
 
 exports.__esModule = true;
 exports.default = exports.getRequestOptions = void 0;
 
-require("regenerator-runtime/runtime");
+require("regenerator-runtime/runtime.js");
 
-var _superagent = _interopRequireDefault(require("superagent"));
+var _ky = _interopRequireDefault(require("./ky"));
 
 var _urlJoin = _interopRequireDefault(require("url-join"));
 
@@ -39,7 +37,8 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var maxUrlLength = 4000; // options that can be resolved if they are functions
+var maxUrlLength = 4000;
+var oneDay = 86400000; // options that can be resolved if they are functions
 
 var fns = ['root', 'url', 'credentials', 'retry', 'headers', 'options', 'data', 'simple'];
 
@@ -78,43 +77,142 @@ var getRequestOptions = function getRequestOptions(defaultOptions, localOptions)
 
 exports.getRequestOptions = getRequestOptions;
 
-function _callee2(defaultOptions, localOptions) {
-  var options, stringQuery, rewriting, method, req, out;
-
-  function _ref3(p) {
-    return req.use(p);
-  }
-
-  function _ref4(resolve, reject) {
-    req.end(function (err, res) {
-      if (err) {
-        err.res = err.response || res;
-        if (options.onError) options.onError(err);
-        return reject(err);
-      }
-
-      resolve(options.simple ? res.body || res.text : {
-        status: res.status,
-        headers: res.headers,
-        body: res.body,
-        text: res.text
-      });
-    });
-  }
-
-  function _ref5() {
-    return req.abort();
-  }
-
+function _callee5(res) {
+  var text, body;
   return regeneratorRuntime.wrap(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          options = getRequestOptions(defaultOptions, localOptions); // special handling needed for rewriting large queries
+          _context.next = 2;
+          return res.text();
+
+        case 2:
+          text = _context.sent;
+
+          try {
+            body = JSON.parse(text);
+          } catch (err) {// do nothing
+          }
+
+          return _context.abrupt("return", {
+            ok: res.ok,
+            status: res.status,
+            headers: res.headers,
+            body: body,
+            text: text
+          });
+
+        case 5:
+        case "end":
+          return _context.stop();
+      }
+    }
+  }, _callee5);
+}
+
+var createResponseObject = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee5));
+
+  return function createResponseObject(_x) {
+    return _ref2.apply(this, arguments);
+  };
+}();
+
+function _callee8(defaultOptions, localOptions) {
+  var _options$options;
+
+  var options, qs, stringQuery, rewriting, method, headers, controller, signal, out;
+
+  function _callee6(res) {
+    var out;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.next = 2;
+            return createResponseObject(res);
+
+          case 2:
+            out = _context2.sent;
+
+            if (!options.simple) {
+              _context2.next = 5;
+              break;
+            }
+
+            return _context2.abrupt("return", out.body || out.text);
+
+          case 5:
+            return _context2.abrupt("return", out);
+
+          case 6:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee6);
+  }
+
+  function _ref6() {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee6));
+
+    return function (_x4) {
+      return _ref4.apply(this, arguments);
+    };
+  }
+
+  function _callee7(err) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            if (!err.response) {
+              _context3.next = 4;
+              break;
+            }
+
+            _context3.next = 3;
+            return createResponseObject(err.response);
+
+          case 3:
+            err.res = _context3.sent;
+
+          case 4:
+            if (options.onError) options.onError(err);
+            throw err;
+
+          case 6:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee7);
+  }
+
+  function _ref7() {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee7));
+
+    return function (_x5) {
+      return _ref5.apply(this, arguments);
+    };
+  }
+
+  function _ref8() {
+    return controller.abort();
+  }
+
+  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          options = getRequestOptions(defaultOptions, localOptions);
+          qs = Object.assign({}, options.options, {
+            includes: options.includes || ((_options$options = options.options) == null ? void 0 : _options$options.includes)
+          }); // special handling needed for rewriting large queries
 
           rewriting = false, method = options.method;
 
-          if (options.options) {
+          if (Object.keys(qs).length !== 0) {
             stringQuery = serializeQuery(options.options);
 
             if (stringQuery.length + options.url.length >= maxUrlLength) {
@@ -127,50 +225,37 @@ function _callee2(defaultOptions, localOptions) {
             }
           }
 
-          req = _superagent.default[method](options.url);
+          headers = Object.assign({}, options.headers);
+          if (rewriting) headers['X-HTTP-Method-Override'] = 'GET';
+          controller = new AbortController();
+          signal = controller.signal;
+          out = (0, _ky.default)(options.url, {
+            method: method,
+            signal: signal,
+            hooks: options.hooks,
+            retry: options.retry,
+            credentials: options.credentials,
+            timeout: options.timeout || oneDay,
+            headers: headers,
+            searchParams: rewriting ? undefined : stringQuery,
+            json: rewriting ? qs : options.data
+          }).then( /*#__PURE__*/_ref6()).catch( /*#__PURE__*/_ref7());
+          out.abort = _ref8;
+          return _context4.abrupt("return", out);
 
-          if (options.retry) {
-            req.retry(options.retry, options.shouldRetry);
-          }
-
-          if (options.timeout) {
-            req.timeout(options.timeout);
-          }
-
-          if (options.plugins) {
-            options.plugins.forEach(_ref3);
-          }
-
-          if (options.options) {
-            rewriting ? req.set('X-HTTP-Method-Override', 'GET').send(options.options) : req.query(stringQuery);
-          }
-
-          if (options.includes) {
-            req.query(serializeQuery({
-              includes: options.includes
-            }));
-          }
-
-          if (options.headers) req.set(options.headers);
-          if (options.data) req.send(options.data);
-          if (options.credentials) req.withCredentials();
-          out = new Promise(_ref4);
-          out.cancel = _ref5;
-          return _context.abrupt("return", out);
-
-        case 15:
+        case 11:
         case "end":
-          return _context.stop();
+          return _context4.stop();
       }
     }
-  }, _callee2);
+  }, _callee8);
 }
 
 var _default = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee2));
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee8));
 
-  return function (_x, _x2) {
-    return _ref2.apply(this, arguments);
+  return function (_x2, _x3) {
+    return _ref3.apply(this, arguments);
   };
 }();
 

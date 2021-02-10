@@ -1,10 +1,10 @@
 "use strict";
 
-require("core-js/modules/es.array.reduce");
+require("core-js/modules/es.array.reduce.js");
 
-require("core-js/modules/es.object.assign");
+require("core-js/modules/es.object.assign.js");
 
-require("core-js/modules/es.object.entries");
+require("core-js/modules/es.object.entries.js");
 
 exports.__esModule = true;
 exports.default = void 0;
