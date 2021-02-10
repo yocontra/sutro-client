@@ -1,8 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-var _exportNames = {};
-exports.default = void 0;
+exports.combineUrl = exports.default = void 0;
 
 require("whatwg-fetch");
 
@@ -13,12 +12,7 @@ var _es = _interopRequireDefault(require("web-streams-polyfill/ponyfill/es2018")
 var _index = _interopRequireWildcard(require("./index"));
 
 exports.default = _index.default;
-Object.keys(_index).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  if (key in exports && exports[key] === _index[key]) return;
-  exports[key] = _index[key];
-});
+exports.combineUrl = _index.combineUrl;
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
@@ -28,4 +22,3 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Basically from https://github.com/sindresorhus/ky-universal/blob/main/index.js with modifications
 if (!global.ReadableStream) global.ReadableStream = _es.default;
-module.exports = exports.default;

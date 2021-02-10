@@ -5,5 +5,4 @@ import ReadableStream from 'web-streams-polyfill/ponyfill/es2018'
 
 if (!global.ReadableStream) global.ReadableStream = ReadableStream
 
-export { default } from './index'
-export * from './index'
+export { default, combineUrl } from './index'

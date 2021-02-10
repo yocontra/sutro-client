@@ -7,8 +7,7 @@ require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.promise.js");
 
 exports.__esModule = true;
-var _exportNames = {};
-exports.default = void 0;
+exports.combineUrl = exports.default = void 0;
 
 var _nodeFetch = _interopRequireWildcard(require("node-fetch"));
 
@@ -17,12 +16,7 @@ var _es = _interopRequireDefault(require("web-streams-polyfill/ponyfill/es2018")
 var _index = _interopRequireWildcard(require("./index"));
 
 exports.default = _index.default;
-Object.keys(_index).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  if (key in exports && exports[key] === _index[key]) return;
-  exports[key] = _index[key];
-});
+exports.combineUrl = _index.combineUrl;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,4 +41,3 @@ if (!global.Headers) global.Headers = _nodeFetch.Headers;
 if (!global.Request) global.Request = _nodeFetch.Request;
 if (!global.Response) global.Response = _nodeFetch.Response;
 if (!global.ReadableStream) global.ReadableStream = _es.default;
-module.exports = exports.default;
