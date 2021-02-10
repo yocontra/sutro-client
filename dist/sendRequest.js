@@ -213,7 +213,7 @@ function _callee8(defaultOptions, localOptions) {
           rewriting = false, method = options.method;
 
           if (Object.keys(qs).length !== 0) {
-            stringQuery = serializeQuery(options.options);
+            stringQuery = serializeQuery(qs);
 
             if (stringQuery.length + options.url.length >= maxUrlLength) {
               if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
