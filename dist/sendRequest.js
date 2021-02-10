@@ -238,7 +238,8 @@ function _callee8(defaultOptions, localOptions) {
             timeout: options.timeout || oneDay,
             headers: headers,
             searchParams: rewriting ? undefined : stringQuery,
-            json: rewriting ? qs : options.data
+            json: rewriting ? qs : options.data,
+            onDownloadProgress: options.onData
           }).then( /*#__PURE__*/_ref6()).catch( /*#__PURE__*/_ref7());
           out.abort = _ref8;
           return _context4.abrupt("return", out);

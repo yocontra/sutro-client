@@ -89,7 +89,8 @@ export default async (defaultOptions, localOptions) => {
     timeout: options.timeout || oneDay,
     headers,
     searchParams: rewriting ? undefined : stringQuery,
-    json: rewriting ? qs : options.data
+    json: rewriting ? qs : options.data,
+    onDownloadProgress: options.onData
   })
     .then(async (res) => {
       const out = await createResponseObject(res)
