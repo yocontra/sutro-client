@@ -77,23 +77,33 @@ var getRequestOptions = function getRequestOptions(defaultOptions, localOptions)
 
 exports.getRequestOptions = getRequestOptions;
 
-function _callee5(res) {
-  var text, body;
+function _callee5(res, _ref2) {
+  var _ref2$parse, parse, text, body;
+
   return regeneratorRuntime.wrap(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.next = 2;
+          _ref2$parse = _ref2.parse, parse = _ref2$parse === void 0 ? JSON.parse : _ref2$parse;
+          _context.next = 3;
           return res.text();
 
-        case 2:
+        case 3:
           text = _context.sent;
+          _context.prev = 4;
+          _context.next = 7;
+          return parse(text);
 
-          try {
-            body = JSON.parse(text);
-          } catch (err) {// do nothing
-          }
+        case 7:
+          body = _context.sent;
+          _context.next = 12;
+          break;
 
+        case 10:
+          _context.prev = 10;
+          _context.t0 = _context["catch"](4);
+
+        case 12:
           return _context.abrupt("return", {
             ok: res.ok,
             status: res.status,
@@ -102,19 +112,19 @@ function _callee5(res) {
             text: text
           });
 
-        case 5:
+        case 13:
         case "end":
           return _context.stop();
       }
     }
-  }, _callee5);
+  }, _callee5, null, [[4, 10]]);
 }
 
 var createResponseObject = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee5));
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee5));
 
-  return function createResponseObject(_x) {
-    return _ref2.apply(this, arguments);
+  return function createResponseObject(_x, _x2) {
+    return _ref3.apply(this, arguments);
   };
 }();
 
@@ -130,7 +140,9 @@ function _callee8(defaultOptions, localOptions) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return createResponseObject(res);
+            return createResponseObject(res, {
+              parse: options.parse
+            });
 
           case 2:
             out = _context2.sent;
@@ -153,11 +165,11 @@ function _callee8(defaultOptions, localOptions) {
     }, _callee6);
   }
 
-  function _ref6() {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee6));
+  function _ref7() {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee6));
 
-    return function (_x4) {
-      return _ref4.apply(this, arguments);
+    return function (_x5) {
+      return _ref5.apply(this, arguments);
     };
   }
 
@@ -172,7 +184,9 @@ function _callee8(defaultOptions, localOptions) {
             }
 
             _context3.next = 3;
-            return createResponseObject(err.response);
+            return createResponseObject(err.response, {
+              parse: options.parse
+            });
 
           case 3:
             err.res = _context3.sent;
@@ -190,15 +204,15 @@ function _callee8(defaultOptions, localOptions) {
     }, _callee7);
   }
 
-  function _ref7() {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee7));
+  function _ref8() {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee7));
 
-    return function (_x5) {
-      return _ref5.apply(this, arguments);
+    return function (_x6) {
+      return _ref6.apply(this, arguments);
     };
   }
 
-  function _ref8() {
+  function _ref9() {
     return controller.abort();
   }
 
@@ -241,8 +255,8 @@ function _callee8(defaultOptions, localOptions) {
             searchParams: rewriting ? undefined : stringQuery,
             json: rewriting ? qs : options.data,
             onDownloadProgress: options.onData
-          }).then( /*#__PURE__*/_ref6()).catch( /*#__PURE__*/_ref7());
-          out.abort = _ref8;
+          }).then( /*#__PURE__*/_ref7()).catch( /*#__PURE__*/_ref8());
+          out.abort = _ref9;
           return _context4.abrupt("return", out);
 
         case 11:
@@ -254,10 +268,10 @@ function _callee8(defaultOptions, localOptions) {
 }
 
 var _default = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee8));
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee8));
 
-  return function (_x2, _x3) {
-    return _ref3.apply(this, arguments);
+  return function (_x3, _x4) {
+    return _ref4.apply(this, arguments);
   };
 }();
 

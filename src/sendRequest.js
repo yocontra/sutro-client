@@ -37,11 +37,11 @@ export const getRequestOptions = (defaultOptions, localOptions) => {
   }
 }
 
-const createResponseObject = async (res) => {
+const createResponseObject = async (res, { parse = JSON.parse }) => {
   const text = await res.text()
   let body
   try {
-    body = JSON.parse(text)
+    body = await parse(text)
   } catch (err) {
     // do nothing
   }
@@ -93,13 +93,13 @@ export default async (defaultOptions, localOptions) => {
     onDownloadProgress: options.onData
   })
     .then(async (res) => {
-      const out = await createResponseObject(res)
+      const out = await createResponseObject(res, { parse: options.parse })
       if (options.simple) return out.body || out.text
       return out
     })
     .catch(async (err) => {
       if (err.response) {
-        err.res = await createResponseObject(err.response)
+        err.res = await createResponseObject(err.response, { parse: options.parse })
         err.status = err.response.status
       }
       if (options.onError) options.onError(err)
