@@ -91,19 +91,33 @@ function _callee5(res, _ref2) {
         case 3:
           text = _context.sent;
           _context.prev = 4;
-          _context.next = 7;
-          return parse(text);
 
-        case 7:
-          body = _context.sent;
+          if (parse) {
+            _context.next = 9;
+            break;
+          }
+
+          _context.t0 = undefined;
           _context.next = 12;
           break;
 
-        case 10:
-          _context.prev = 10;
-          _context.t0 = _context["catch"](4);
+        case 9:
+          _context.next = 11;
+          return parse(text);
+
+        case 11:
+          _context.t0 = _context.sent;
 
         case 12:
+          body = _context.t0;
+          _context.next = 17;
+          break;
+
+        case 15:
+          _context.prev = 15;
+          _context.t1 = _context["catch"](4);
+
+        case 17:
           return _context.abrupt("return", {
             ok: res.ok,
             status: res.status,
@@ -112,12 +126,12 @@ function _callee5(res, _ref2) {
             text: text
           });
 
-        case 13:
+        case 18:
         case "end":
           return _context.stop();
       }
     }
-  }, _callee5, null, [[4, 10]]);
+  }, _callee5, null, [[4, 15]]);
 }
 
 var createResponseObject = /*#__PURE__*/function () {

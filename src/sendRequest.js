@@ -41,7 +41,7 @@ const createResponseObject = async (res, { parse = JSON.parse }) => {
   const text = await res.text()
   let body
   try {
-    body = await parse(text)
+    body = !parse ? undefined : await parse(text)
   } catch (err) {
     // do nothing
   }
