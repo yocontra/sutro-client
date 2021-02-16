@@ -13,4 +13,4 @@ if (!global.Request) global.Request = Request
 if (!global.Response) global.Response = Response
 if (!global.ReadableStream) global.ReadableStream = ReadableStream
 
-export { default, combineUrl } from './index'
+export { default, combineUrl, request } from './index'

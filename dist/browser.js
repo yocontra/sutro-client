@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.combineUrl = exports.default = void 0;
+exports.request = exports.combineUrl = exports.default = void 0;
 
 require("whatwg-fetch");
 
@@ -13,6 +13,7 @@ var _index = _interopRequireWildcard(require("./index"));
 
 exports.default = _index.default;
 exports.combineUrl = _index.combineUrl;
+exports.request = _index.request;
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 

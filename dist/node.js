@@ -7,7 +7,7 @@ require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.promise.js");
 
 exports.__esModule = true;
-exports.combineUrl = exports.default = void 0;
+exports.request = exports.combineUrl = exports.default = void 0;
 
 var _nodeFetch = _interopRequireWildcard(require("node-fetch"));
 
@@ -17,6 +17,7 @@ var _index = _interopRequireWildcard(require("./index"));
 
 exports.default = _index.default;
 exports.combineUrl = _index.combineUrl;
+exports.request = _index.request;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
