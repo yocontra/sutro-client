@@ -28,8 +28,6 @@ require("core-js/modules/es.promise.js");
 
 require("core-js/modules/es.regexp.exec.js");
 
-require("core-js/modules/es.regexp.to-string.js");
-
 require("core-js/modules/es.string.ends-with.js");
 
 require("core-js/modules/es.string.includes.js");
@@ -97,6 +95,10 @@ exports.default = void 0;
 
 require("regenerator-runtime/runtime.js");
 
+var _qs = _interopRequireDefault(require("qs"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -121,8 +123,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-/*! MIT License © Sindre Sorhus */
-// Adds a basic globalThis fix, and fixes an issue with QS being messed with
+// Adds a basic globalThis fix, uses regular qs formatter, and fixes an issue with QS being messed with
 var globalThis = typeof window === 'undefined' ? global : window;
 
 var isObject = function isObject(value) {
@@ -366,7 +367,9 @@ function _Ky(input, options) {
   this.request = new globalThis.Request(this._input, this._options);
 
   if (this._options.searchParams) {
-    var searchParams = typeof this._options.searchParams === 'string' ? "?" + this._options.searchParams : "?" + new URLSearchParams(this._options.searchParams).toString();
+    var searchParams = typeof this._options.searchParams === 'string' ? "?" + this._options.searchParams : "?" + _qs.default.stringify(this._options.searchParams, {
+      strictNullHandling: true
+    });
     var url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams); // To provide correct form boundary, Content-Type header should be deleted each time when new Request instantiated from another one
 
     if ((supportsFormData && this._options.body instanceof globalThis.FormData || this._options.body instanceof URLSearchParams) && !(this._options.headers && this._options.headers['content-type'])) {

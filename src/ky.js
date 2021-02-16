@@ -1,5 +1,7 @@
 /*! MIT License © Sindre Sorhus */
-// Adds a basic globalThis fix, and fixes an issue with QS being messed with
+import qs from 'qs'
+
+// Adds a basic globalThis fix, uses regular qs formatter, and fixes an issue with QS being messed with
 
 const globalThis = typeof window === 'undefined' ? global : window
 const isObject = (value) => value !== null && typeof value === 'object'
@@ -236,7 +238,7 @@ class Ky {
     if (this._options.searchParams) {
       const searchParams = typeof this._options.searchParams === 'string'
         ? `?${this._options.searchParams}`
-        : `?${new URLSearchParams(this._options.searchParams).toString()}`
+        : `?${qs.stringify(this._options.searchParams, { strictNullHandling: true })}`
       const url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams)
 
       // To provide correct form boundary, Content-Type header should be deleted each time when new Request instantiated from another one
