@@ -1,5 +1,6 @@
 import combineUrl from './combineUrl'
 import sendRequest, { getRequestOptions } from './sendRequest'
+import request from './ky'
 
 const replaceWithPromises = (obj, globalOptions) =>
   Object.entries(obj).reduce((prev, [ k, v ]) => {
@@ -23,4 +24,4 @@ export default (resources, options = {}) => {
   return replaceWithPromises(start, options)
 }
 
-export { combineUrl }
+export { combineUrl, request }
