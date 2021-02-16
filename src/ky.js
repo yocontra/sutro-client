@@ -1,6 +1,7 @@
 /*! MIT License © Sindre Sorhus */
+// Adds a basic globalThis fix, and fixes an issue with QS being messed with
 
-const globalThis = typeof window === 'undefined' ? global : window // only line added
+const globalThis = typeof window === 'undefined' ? global : window
 const isObject = (value) => value !== null && typeof value === 'object'
 const supportsAbortController = typeof globalThis.AbortController === 'function'
 const supportsStreams = typeof globalThis.ReadableStream === 'function'
@@ -233,7 +234,9 @@ class Ky {
     this.request = new globalThis.Request(this._input, this._options)
 
     if (this._options.searchParams) {
-      const searchParams = `?${new URLSearchParams(this._options.searchParams).toString()}`
+      const searchParams = typeof this._options.searchParams === 'string'
+        ? `?${this._options.searchParams}`
+        : `?${new URLSearchParams(this._options.searchParams).toString()}`
       const url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams)
 
       // To provide correct form boundary, Content-Type header should be deleted each time when new Request instantiated from another one

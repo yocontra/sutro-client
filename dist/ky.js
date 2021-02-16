@@ -122,7 +122,8 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 /*! MIT License © Sindre Sorhus */
-var globalThis = typeof window === 'undefined' ? global : window; // only line added
+// Adds a basic globalThis fix, and fixes an issue with QS being messed with
+var globalThis = typeof window === 'undefined' ? global : window;
 
 var isObject = function isObject(value) {
   return value !== null && typeof value === 'object';
@@ -365,7 +366,7 @@ function _Ky(input, options) {
   this.request = new globalThis.Request(this._input, this._options);
 
   if (this._options.searchParams) {
-    var searchParams = "?" + new URLSearchParams(this._options.searchParams).toString();
+    var searchParams = typeof this._options.searchParams === 'string' ? "?" + this._options.searchParams : "?" + new URLSearchParams(this._options.searchParams).toString();
     var url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams); // To provide correct form boundary, Content-Type header should be deleted each time when new Request instantiated from another one
 
     if ((supportsFormData && this._options.body instanceof globalThis.FormData || this._options.body instanceof URLSearchParams) && !(this._options.headers && this._options.headers['content-type'])) {
