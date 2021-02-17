@@ -86,6 +86,7 @@ export default async (defaultOptions, localOptions) => {
     hooks: options.hooks,
     retry: options.retry,
     credentials: options.credentials,
+    cache: options.cache,
     timeout: options.timeout || oneDay,
     headers,
     searchParams: rewriting ? undefined : stringQuery,

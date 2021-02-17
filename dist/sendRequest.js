@@ -264,6 +264,7 @@ function _callee8(defaultOptions, localOptions) {
             hooks: options.hooks,
             retry: options.retry,
             credentials: options.credentials,
+            cache: options.cache,
             timeout: options.timeout || oneDay,
             headers: headers,
             searchParams: rewriting ? undefined : stringQuery,
