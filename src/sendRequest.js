@@ -100,8 +100,12 @@ export default async (defaultOptions, localOptions) => {
     })
     .catch(async (err) => {
       if (err.response) {
-        err.res = await createResponseObject(err.response, { parse: options.parse })
         err.status = err.response.status
+        try {
+          err.res = await createResponseObject(err.response, { parse: options.parse })
+        } catch (_) {
+          // ignore
+        }
       }
       if (options.onError) options.onError(err)
       throw err

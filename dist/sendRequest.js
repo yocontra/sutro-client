@@ -193,29 +193,36 @@ function _callee8(defaultOptions, localOptions) {
         switch (_context3.prev = _context3.next) {
           case 0:
             if (!err.response) {
-              _context3.next = 5;
+              _context3.next = 10;
               break;
             }
 
-            _context3.next = 3;
+            err.status = err.response.status;
+            _context3.prev = 2;
+            _context3.next = 5;
             return createResponseObject(err.response, {
               parse: options.parse
             });
 
-          case 3:
-            err.res = _context3.sent;
-            err.status = err.response.status;
-
           case 5:
+            err.res = _context3.sent;
+            _context3.next = 10;
+            break;
+
+          case 8:
+            _context3.prev = 8;
+            _context3.t0 = _context3["catch"](2);
+
+          case 10:
             if (options.onError) options.onError(err);
             throw err;
 
-          case 7:
+          case 12:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee7);
+    }, _callee7, null, [[2, 8]]);
   }
 
   function _ref8() {
