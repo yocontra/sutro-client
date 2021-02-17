@@ -7,7 +7,7 @@ require("whatwg-fetch");
 
 require("abort-controller/polyfill");
 
-var _es = _interopRequireDefault(require("web-streams-polyfill/ponyfill/es2018"));
+var _es = _interopRequireDefault(require("web-streams-polyfill/ponyfill/es6"));
 
 var _index = _interopRequireWildcard(require("./index"));
 
