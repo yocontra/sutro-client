@@ -715,7 +715,7 @@ function _ref3() {
 }
 
 function _callee11() {
-  var _iterator4, _step4, hook, _result;
+  var _iterator4, _step4, hook, result;
 
   return regeneratorRuntime.wrap(function _callee5$(_context5) {
     while (1) {
@@ -734,23 +734,23 @@ function _callee11() {
           return hook(this.request, this._options);
 
         case 5:
-          _result = _context5.sent;
+          result = _context5.sent;
 
-          if (!(_result instanceof Request)) {
+          if (!(result instanceof Request)) {
             _context5.next = 9;
             break;
           }
 
-          this.request = _result;
+          this.request = result;
           return _context5.abrupt("break", 13);
 
         case 9:
-          if (!(_result instanceof Response)) {
+          if (!(result instanceof Response)) {
             _context5.next = 11;
             break;
           }
 
-          return _context5.abrupt("return", _result);
+          return _context5.abrupt("return", result);
 
         case 11:
           _context5.next = 1;

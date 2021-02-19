@@ -77,7 +77,7 @@ var getRequestOptions = function getRequestOptions(defaultOptions, localOptions)
 
 exports.getRequestOptions = getRequestOptions;
 
-function _callee5(res, _ref2) {
+function _callee4(res, _ref2) {
   var _ref2$parse, parse, text, body;
 
   return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -131,23 +131,48 @@ function _callee5(res, _ref2) {
           return _context.stop();
       }
     }
-  }, _callee5, null, [[4, 15]]);
+  }, _callee4, null, [[4, 15]]);
 }
 
 var createResponseObject = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee5));
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee4));
 
   return function createResponseObject(_x, _x2) {
     return _ref3.apply(this, arguments);
   };
 }();
 
-function _callee8(defaultOptions, localOptions) {
+var _default = function _default(defaultOptions, localOptions) {
   var _options$options;
 
-  var options, qs, stringQuery, rewriting, method, headers, controller, signal, out;
+  var options = getRequestOptions(defaultOptions, localOptions);
+  var qs = Object.assign({}, options.options, {
+    includes: options.includes || ((_options$options = options.options) == null ? void 0 : _options$options.includes)
+  }); // special handling needed for rewriting large queries
 
-  function _callee6(res) {
+  var stringQuery,
+      rewriting = false,
+      method = options.method;
+
+  if (Object.keys(qs).length !== 0) {
+    stringQuery = serializeQuery(qs);
+
+    if (stringQuery.length + options.url.length >= maxUrlLength) {
+      if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
+        method = 'post';
+        rewriting = true;
+      } else {
+        console.warn('URL is longer than 4KB - this may cause issues! Try using rewriteLargeRequests.');
+      }
+    }
+  }
+
+  var headers = Object.assign({}, options.headers);
+  if (rewriting) headers['X-HTTP-Method-Override'] = 'GET';
+  var controller = options.controller || new AbortController();
+  var signal = controller.signal;
+
+  function _callee5(res) {
     var out;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
@@ -176,18 +201,10 @@ function _callee8(defaultOptions, localOptions) {
             return _context2.stop();
         }
       }
-    }, _callee6);
+    }, _callee5);
   }
 
-  function _ref7() {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee6));
-
-    return function (_x5) {
-      return _ref5.apply(this, arguments);
-    };
-  }
-
-  function _callee7(err) {
+  function _callee6(err) {
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -222,79 +239,44 @@ function _callee8(defaultOptions, localOptions) {
             return _context3.stop();
         }
       }
-    }, _callee7, null, [[2, 8]]);
+    }, _callee6, null, [[2, 8]]);
   }
 
-  function _ref8() {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee7));
+  var out = (0, _ky.default)(options.url, {
+    method: method,
+    signal: signal,
+    hooks: options.hooks,
+    retry: options.retry,
+    credentials: options.credentials,
+    cache: options.cache,
+    timeout: options.timeout || oneDay,
+    headers: headers,
+    searchParams: rewriting ? undefined : stringQuery,
+    json: rewriting ? qs : options.data,
+    onDownloadProgress: options.onData
+  }).then( /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee5));
 
-    return function (_x6) {
-      return _ref6.apply(this, arguments);
+    return function (_x3) {
+      return _ref4.apply(this, arguments);
     };
-  }
+  }()).catch( /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee6));
 
-  function _ref9() {
-    return controller.abort();
-  }
+    return function (_x4) {
+      return _ref5.apply(this, arguments);
+    };
+  }());
 
-  return regeneratorRuntime.wrap(function _callee4$(_context4) {
-    while (1) {
-      switch (_context4.prev = _context4.next) {
-        case 0:
-          options = getRequestOptions(defaultOptions, localOptions);
-          qs = Object.assign({}, options.options, {
-            includes: options.includes || ((_options$options = options.options) == null ? void 0 : _options$options.includes)
-          }); // special handling needed for rewriting large queries
-
-          rewriting = false, method = options.method;
-
-          if (Object.keys(qs).length !== 0) {
-            stringQuery = serializeQuery(qs);
-
-            if (stringQuery.length + options.url.length >= maxUrlLength) {
-              if (options.rewriteLargeRequests && method.toLowerCase() === 'get') {
-                method = 'post';
-                rewriting = true;
-              } else {
-                console.warn('URL is longer than 4KB - this may cause issues! Try using rewriteLargeRequests.');
-              }
-            }
-          }
-
-          headers = Object.assign({}, options.headers);
-          if (rewriting) headers['X-HTTP-Method-Override'] = 'GET';
-          controller = new AbortController();
-          signal = controller.signal;
-          out = (0, _ky.default)(options.url, {
-            method: method,
-            signal: signal,
-            hooks: options.hooks,
-            retry: options.retry,
-            credentials: options.credentials,
-            cache: options.cache,
-            timeout: options.timeout || oneDay,
-            headers: headers,
-            searchParams: rewriting ? undefined : stringQuery,
-            json: rewriting ? qs : options.data,
-            onDownloadProgress: options.onData
-          }).then( /*#__PURE__*/_ref7()).catch( /*#__PURE__*/_ref8());
-          out.cancel = _ref9;
-          return _context4.abrupt("return", out);
-
-        case 11:
-        case "end":
-          return _context4.stop();
-      }
-    }
-  }, _callee8);
-}
-
-var _default = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(_callee8));
-
-  return function (_x3, _x4) {
-    return _ref4.apply(this, arguments);
+  out.abort = function () {
+    return controller.abort.apply(controller, arguments);
   };
-}();
+
+  out.cancel = function () {
+    return controller.abort();
+  };
+
+  return out;
+};
 
 exports.default = _default;

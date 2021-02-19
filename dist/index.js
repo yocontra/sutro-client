@@ -26,6 +26,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var replaceWithPromises = function replaceWithPromises(obj, globalOptions) {
+  if (globalOptions === void 0) {
+    globalOptions = {};
+  }
+
   return Object.entries(obj).reduce(function (prev, _ref) {
     var k = _ref[0],
         v = _ref[1];
@@ -48,13 +52,5 @@ var replaceWithPromises = function replaceWithPromises(obj, globalOptions) {
   }, {});
 };
 
-var _default = function _default(resources, options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  var start = resources.toJS ? resources.toJS() : resources;
-  return replaceWithPromises(start, options);
-};
-
+var _default = replaceWithPromises;
 exports.default = _default;
