@@ -52,7 +52,7 @@ const createResponseObject = async (res, { parse = JSON.parse }) => {
     body, text
   }
 }
-export default async (defaultOptions, localOptions) => {
+export default (defaultOptions, localOptions) => {
   const options = getRequestOptions(defaultOptions, localOptions)
 
   const qs = {
@@ -77,7 +77,7 @@ export default async (defaultOptions, localOptions) => {
   const headers = { ...options.headers }
   if (rewriting) headers['X-HTTP-Method-Override'] = 'GET'
 
-  const controller = new AbortController()
+  const controller = options.controller || new AbortController()
   const { signal } = controller
 
   const out = ky(options.url, {
@@ -111,6 +111,8 @@ export default async (defaultOptions, localOptions) => {
       throw err
     })
 
-  out.abort = () => controller.abort()
+  out.abort = (...a) => controller.abort(...a)
+  out.cancel = () => controller.abort()
+
   return out
 }

@@ -139,6 +139,17 @@ describe('sutro-client', () => {
     body.should.eql(expected)
   })
 
+  it('should allow cancellation', async () => {
+    const options = { userId: '123', friendId: '456', simple: true }
+    const res = client.user.friend.findById(options)
+    res.cancel()
+  })
+  it('should allow aborting', async () => {
+    const options = { userId: '123', friendId: '456', simple: true }
+    const res = client.user.friend.findById(options)
+    res.abort()
+  })
+
   it('should report errors properly', (done) => {
     client.user.find({ options: { error: true } }).catch((err) => {
       should.exist(err)
@@ -149,13 +160,13 @@ describe('sutro-client', () => {
   })
   it('should report path errors properly', (done) => {
     const options = { data: { id: '123' } }
-    client.user.friend.create(options)
-      .then(() => {
-        done(new Error('Did not throw!'))
-      })
-      .catch((err) => {
-        should.exist(err)
-        done()
-      })
+    try {
+      client.user.friend.create(options)
+    } catch (err) {
+      should.exist(err)
+      done()
+      return
+    }
+    throw new Error('Did not throw!')
   })
 })

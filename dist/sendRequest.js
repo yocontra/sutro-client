@@ -278,7 +278,7 @@ function _callee8(defaultOptions, localOptions) {
             json: rewriting ? qs : options.data,
             onDownloadProgress: options.onData
           }).then( /*#__PURE__*/_ref7()).catch( /*#__PURE__*/_ref8());
-          out.abort = _ref9;
+          out.cancel = _ref9;
           return _context4.abrupt("return", out);
 
         case 11:

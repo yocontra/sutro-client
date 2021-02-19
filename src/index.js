@@ -2,7 +2,7 @@ import combineUrl from './combineUrl'
 import sendRequest, { getRequestOptions } from './sendRequest'
 import request from './ky'
 
-const replaceWithPromises = (obj, globalOptions) =>
+const replaceWithPromises = (obj, globalOptions = {}) =>
   Object.entries(obj).reduce((prev, [ k, v ]) => {
     if (!v.path || !v.method) {
       prev[k] = replaceWithPromises(v, globalOptions)
@@ -19,9 +19,6 @@ const replaceWithPromises = (obj, globalOptions) =>
     return prev
   }, {})
 
-export default (resources, options = {}) => {
-  const start = resources.toJS ? resources.toJS() : resources
-  return replaceWithPromises(start, options)
-}
+export default replaceWithPromises
 
 export { combineUrl, request }
