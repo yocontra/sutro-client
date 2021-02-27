@@ -1,25 +1,25 @@
 "use strict";
 
-require("core-js/modules/es.array.includes.js");
-
-require("core-js/modules/es.array.reduce.js");
-
-require("core-js/modules/es.object.assign.js");
-
-require("core-js/modules/es.object.entries.js");
-
-require("core-js/modules/es.object.keys.js");
-
-require("core-js/modules/es.object.to-string.js");
-
 require("core-js/modules/es.promise.js");
 
-require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.object.to-string.js");
 
 exports.__esModule = true;
 exports.default = exports.getRequestOptions = void 0;
 
 require("regenerator-runtime/runtime.js");
+
+require("core-js/modules/es.array.reduce.js");
+
+require("core-js/modules/es.object.entries.js");
+
+require("core-js/modules/es.array.includes.js");
+
+require("core-js/modules/es.object.assign.js");
+
+require("core-js/modules/es.string.includes.js");
+
+require("core-js/modules/es.object.keys.js");
 
 var _ky = _interopRequireDefault(require("./ky"));
 

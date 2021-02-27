@@ -1,5 +1,17 @@
 "use strict";
 
+require("core-js/modules/es.weak-map.js");
+
+require("core-js/modules/es.object.to-string.js");
+
+require("core-js/modules/es.string.iterator.js");
+
+require("core-js/modules/es.array.iterator.js");
+
+require("core-js/modules/web.dom-collections.iterator.js");
+
+require("core-js/modules/es.object.get-own-property-descriptor.js");
+
 exports.__esModule = true;
 exports.request = exports.combineUrl = exports.default = void 0;
 

@@ -1,9 +1,9 @@
 "use strict";
 
-require("core-js/modules/es.object.assign.js");
-
 exports.__esModule = true;
 exports.default = void 0;
+
+require("core-js/modules/es.object.assign.js");
 
 var _url = _interopRequireDefault(require("url"));
 

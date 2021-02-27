@@ -1,42 +1,63 @@
 "use strict";
 
+require("core-js/modules/es.array.slice.js");
+
+require("core-js/modules/es.array.from.js");
+
+require("core-js/modules/es.symbol.iterator.js");
+
+require("core-js/modules/es.object.get-prototype-of.js");
+
+require("core-js/modules/es.regexp.to-string.js");
+
+require("core-js/modules/es.reflect.construct.js");
+
+require("core-js/modules/es.map.js");
+
+exports.__esModule = true;
+exports.default = void 0;
+
+require("regenerator-runtime/runtime.js");
+
+require("core-js/modules/es.array.concat.js");
+
+require("core-js/modules/es.object.entries.js");
+
+require("core-js/modules/es.object.assign.js");
+
 require("core-js/modules/es.symbol.js");
 
 require("core-js/modules/es.symbol.description.js");
 
-require("core-js/modules/es.array.concat.js");
-
-require("core-js/modules/es.array.includes.js");
-
-require("core-js/modules/es.array.iterator.js");
-
-require("core-js/modules/es.array-buffer.slice.js");
+require("core-js/modules/es.object.to-string.js");
 
 require("core-js/modules/es.function.name.js");
 
-require("core-js/modules/es.number.constructor.js");
-
-require("core-js/modules/es.number.is-nan.js");
-
-require("core-js/modules/es.object.assign.js");
-
-require("core-js/modules/es.object.entries.js");
-
-require("core-js/modules/es.object.to-string.js");
-
 require("core-js/modules/es.promise.js");
 
-require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.array.includes.js");
 
-require("core-js/modules/es.string.ends-with.js");
-
-require("core-js/modules/es.string.includes.js");
+require("core-js/modules/web.url.js");
 
 require("core-js/modules/es.string.iterator.js");
 
-require("core-js/modules/es.string.replace.js");
+require("core-js/modules/es.array.iterator.js");
+
+require("core-js/modules/web.dom-collections.iterator.js");
 
 require("core-js/modules/es.string.starts-with.js");
+
+require("core-js/modules/es.string.ends-with.js");
+
+require("core-js/modules/es.string.replace.js");
+
+require("core-js/modules/es.regexp.exec.js");
+
+require("core-js/modules/es.string.includes.js");
+
+require("core-js/modules/es.number.constructor.js");
+
+require("core-js/modules/es.number.is-safe-integer.js");
 
 require("core-js/modules/es.typed-array.uint8-array.js");
 
@@ -86,15 +107,6 @@ require("core-js/modules/es.typed-array.to-locale-string.js");
 
 require("core-js/modules/es.typed-array.to-string.js");
 
-require("core-js/modules/web.dom-collections.iterator.js");
-
-require("core-js/modules/web.url.js");
-
-exports.__esModule = true;
-exports.default = void 0;
-
-require("regenerator-runtime/runtime.js");
-
 var _qs = _interopRequireDefault(require("qs"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -109,7 +121,7 @@ function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new 
 
 function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
 
