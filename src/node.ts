@@ -5,7 +5,11 @@ import ReadableStream from 'web-streams-polyfill/ponyfill/es2018'
 const TEN_MEGABYTES = 10000000
 
 if (!global.fetch) {
-  global.fetch = (url, options) => fetch(url, { highWaterMark: TEN_MEGABYTES, ...options })
+  global.fetch = (url, options) =>
+    fetch(url, {
+      highWaterMark: TEN_MEGABYTES,
+      ...options
+    }) as Promise<Response>
 }
 
 if (!global.Headers) global.Headers = Headers

@@ -3,7 +3,6 @@ build
 lib-cov
 *.seed
 *.log
-*.csv
 *.dat
 *.out
 *.pid
@@ -24,3 +23,4 @@ coverage
 *.orig
 .idea
 sandbox
+docs

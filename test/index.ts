@@ -1,4 +1,3 @@
-/*eslint no-console: 0*/
 import should from 'should'
 import sutro, { rewriteLargeRequests } from 'sutro'
 import express from 'express'
@@ -6,15 +5,19 @@ import bodyParser from 'body-parser'
 import compress from 'compression'
 import getPort from 'get-port'
 import createClient from '../src/node'
+import { Express } from 'express-serve-static-core'
+import { Server } from 'node:http'
+import { Resources } from '../src/typings'
 
 const bigUrlLength = 512000
+const defaultOption = { options: { error: undefined } }
 
 const resources = {
   user: {
     create: async ({ data }) => data,
-    find: async ({ options = {} } = {}) => {
+    find: async ({ options } = defaultOption) => {
       if (options.error) throw new Error('Heh')
-      return [ { id: '123' } ]
+      return [{ id: '123' }]
     },
     findById: async ({ userId }) => ({ id: userId }),
     updateById: async ({ userId, data }) => ({ ...data, id: userId }),
@@ -24,20 +27,25 @@ const resources = {
     friend: {
       create: async ({ userId, data }) => ({
         id: userId,
-        friends: [ data.id ]
+        friends: [data.id]
       }),
       find: async ({ userId }) => [
-        { id: '123', friends: [ userId ] },
-        { id: '456', friends: [ userId ] }
+        { id: '123', friends: [userId] },
+        { id: '456', friends: [userId] }
       ],
       findById: async ({ userId, friendId }) => ({
         id: friendId,
-        friends: [ userId ]
+        friends: [userId]
       })
     }
   }
 }
-let port, app, server, http, client
+
+let port: number
+let app: Express
+let server
+let http: Server
+let client: Resources
 
 describe('sutro-client', () => {
   before(async () => {
