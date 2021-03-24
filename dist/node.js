@@ -33,11 +33,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.request = exports.combineUrl = exports.default = void 0;
+exports.combineUrl = exports.default = exports.request = void 0;
 // @ts-nocheck
 // Basically from https://github.com/sindresorhus/ky-universal/blob/main/index.js with modifications
 var node_fetch_1 = __importStar(require("node-fetch"));
 var es2018_1 = __importDefault(require("web-streams-polyfill/ponyfill/es2018"));
+var ky_1 = __importDefault(require("./ky"));
+exports.request = ky_1.default;
 var TEN_MEGABYTES = 10000000;
 if (!global.fetch) {
     global.fetch = function (url, options) {
@@ -55,5 +57,4 @@ if (!global.ReadableStream)
 var index_1 = require("./index");
 Object.defineProperty(exports, "default", { enumerable: true, get: function () { return __importDefault(index_1).default; } });
 Object.defineProperty(exports, "combineUrl", { enumerable: true, get: function () { return index_1.combineUrl; } });
-Object.defineProperty(exports, "request", { enumerable: true, get: function () { return index_1.request; } });
 //# sourceMappingURL=node.js.map
