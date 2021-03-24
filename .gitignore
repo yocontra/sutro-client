@@ -24,3 +24,4 @@ coverage
 .idea
 sandbox
 docs
+package-lock.json

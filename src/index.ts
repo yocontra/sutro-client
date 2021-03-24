@@ -1,17 +1,24 @@
 import combineUrl from './combineUrl'
 import sendRequest, { getRequestOptions } from './sendRequest'
-import request from './ky'
-import { RequestOptions, ServerMeta, Resources, Resource } from './typings'
+import {
+  RequestOptions,
+  ServerMeta,
+  Resource,
+  Resources,
+  ResourceDescriptor
+} from './typings'
 
-const replaceWithPromises = (
-  obj: ServerMeta,
+const replaceWithPromises = <
+  O extends Record<any, ResourceDescriptor | ServerMeta>
+>(
+  obj: O,
   globalOptions: RequestOptions
-): Resources =>
-  Object.entries(obj).reduce((prev, [k, v]) => {
+): Resources<O> =>
+  Object.entries(obj).reduce((acc, [k, v]) => {
     // nested, recurse
     if (!v.path || !v.method) {
-      prev[k] = replaceWithPromises(v as ServerMeta, globalOptions)
-      return prev
+      acc[k] = replaceWithPromises(v as ServerMeta, globalOptions)
+      return acc
     }
     const resolvedOptions = {
       url: v.path,
@@ -20,10 +27,10 @@ const replaceWithPromises = (
     }
     const fn: Resource = sendRequest.bind(null, resolvedOptions)
     fn.getOptions = getRequestOptions.bind(null, resolvedOptions)
-    prev[k] = fn
-    return prev
-  }, {})
+    acc[k] = fn
+    return acc
+  }, Object.create(null))
 
 export default replaceWithPromises
 
-export { combineUrl, request }
+export { combineUrl }

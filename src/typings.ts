@@ -57,6 +57,7 @@ export type RequestObject = Promise<ResponseObject | ResponseObjectSimple> & {
 export type Resource = (() => RequestObject) & {
   getOptions: () => RequestOptions
 }
-export type Resources = {
-  [resource: string]: any
+
+export type Resources<O> = {
+  [K in keyof O]: O[K] extends ResourceDescriptor ? Resource : Resources<O[K]>
 }

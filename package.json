@@ -4,6 +4,7 @@
   "description": "A simple and sugary client for using sutro APIs.",
   "main": "dist/node.js",
   "browser": "dist/browser.js",
+  "types": "dist/index.d.ts",
   "keywords": [
     "sutro",
     "api",

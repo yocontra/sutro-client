@@ -79,7 +79,7 @@ export default (
   localOptions: RequestOptions
 ): RequestObject => {
   const options = getRequestOptions(defaultOptions, localOptions)
-  const qs = options.options
+  const qs = options.options || {}
 
   // special handling needed for rewriting large queries
   let stringQuery: string,

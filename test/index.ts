@@ -5,9 +5,8 @@ import bodyParser from 'body-parser'
 import compress from 'compression'
 import getPort from 'get-port'
 import createClient from '../src/node'
-import { Express } from 'express-serve-static-core'
 import { Server } from 'node:http'
-import { Resources } from '../src/typings'
+import { Resources, ServerMeta } from '../src/typings'
 
 const bigUrlLength = 512000
 const defaultOption = { options: { error: undefined } }
@@ -40,25 +39,23 @@ const resources = {
     }
   }
 }
+const server = sutro({
+  base: '/api',
+  resources
+})
+const app = express()
+app.use(rewriteLargeRequests)
+app.use(bodyParser.json({ limit: '1mb' }))
+app.use(compress())
+app.use('/api', server)
 
 let port: number
-let app: Express
-let server
 let http: Server
-let client: Resources
+let client: Resources<typeof server.meta>
 
 describe('sutro-client', () => {
   before(async () => {
     port = await getPort()
-    app = express()
-    server = sutro({
-      base: '/api',
-      resources
-    })
-    app.use(rewriteLargeRequests)
-    app.use(bodyParser.json({ limit: '1mb' }))
-    app.use(compress())
-    app.use('/api', server)
     http = app.listen(port)
     client = createClient(server.meta, {
       root: `http://localhost:${port}`
@@ -152,12 +149,6 @@ describe('sutro-client', () => {
     const res = client.user.friend.findById(options)
     res.cancel()
   })
-  it('should allow aborting', async () => {
-    const options = { userId: '123', friendId: '456', simple: true }
-    const res = client.user.friend.findById(options)
-    res.abort()
-  })
-
   it('should report errors properly', (done) => {
     client.user.find({ options: { error: true } }).catch((err) => {
       should.exist(err)
