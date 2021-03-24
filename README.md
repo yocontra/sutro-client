@@ -66,6 +66,5 @@ api.user.friend.findById()
 [downloads-image]: http://img.shields.io/npm/dm/sutro-client.svg
 [npm-url]: https://npmjs.org/package/sutro-client
 [npm-image]: http://img.shields.io/npm/v/sutro-client.svg
-
 [travis-url]: https://travis-ci.org/contra/sutro-client
 [travis-image]: https://travis-ci.org/contra/sutro-client.png?branch=master

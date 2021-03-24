@@ -1,37 +1,19 @@
 "use strict";
-
-require("core-js/modules/es.weak-map.js");
-
-require("core-js/modules/es.object.to-string.js");
-
-require("core-js/modules/es.string.iterator.js");
-
-require("core-js/modules/es.array.iterator.js");
-
-require("core-js/modules/web.dom-collections.iterator.js");
-
-require("core-js/modules/es.object.get-own-property-descriptor.js");
-
-exports.__esModule = true;
-exports.request = exports.combineUrl = exports.default = void 0;
-
-require("whatwg-fetch");
-
-require("abort-controller/polyfill");
-
-var _es = _interopRequireDefault(require("web-streams-polyfill/ponyfill/es6"));
-
-var _index = _interopRequireWildcard(require("./index"));
-
-exports.default = _index.default;
-exports.combineUrl = _index.combineUrl;
-exports.request = _index.request;
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.combineUrl = exports.default = exports.request = void 0;
+// @ts-nocheck
 // Basically from https://github.com/sindresorhus/ky-universal/blob/main/index.js with modifications
-if (!global.ReadableStream) global.ReadableStream = _es.default;
+require("whatwg-fetch");
+require("abort-controller/polyfill");
+var es6_1 = __importDefault(require("web-streams-polyfill/ponyfill/es6"));
+var ky_1 = __importDefault(require("./ky"));
+exports.request = ky_1.default;
+if (!global.ReadableStream)
+    global.ReadableStream = es6_1.default;
+var index_1 = require("./index");
+Object.defineProperty(exports, "default", { enumerable: true, get: function () { return __importDefault(index_1).default; } });
+Object.defineProperty(exports, "combineUrl", { enumerable: true, get: function () { return index_1.combineUrl; } });
+//# sourceMappingURL=browser.js.map

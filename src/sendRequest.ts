@@ -3,27 +3,44 @@ import uJoin from 'url-join'
 import template from 'template-url'
 import qs from 'qs'
 import merge from 'lodash.merge'
+import {
+  RequestOptions,
+  RequestOptionsFlat,
+  RequestObject,
+  ResponseObject
+} from './typings'
 
 const maxUrlLength = 4000
 const oneDay = 86400000
 
 // options that can be resolved if they are functions
 const fns = [
-  'root', 'url', 'credentials', 'retry',
-  'headers', 'options', 'data', 'simple'
+  'root',
+  'url',
+  'credentials',
+  'retry',
+  'headers',
+  'options',
+  'data'
 ]
-const result = (fn, arg) => typeof fn === 'function' ? fn(arg) : fn
-const resolveFunctions = (o = {}) =>
-  Object.entries(o).reduce((acc, [ k, v ]) => {
-    acc[k] = fns.includes(k) ? result(v, o) : v
+type GenericOptionFunction = (options: RequestOptions) => unknown
+const resolveFunctions = (o: RequestOptions = {}): RequestOptionsFlat =>
+  Object.entries(o).reduce((acc, [k, v]) => {
+    acc[k] =
+      fns.includes(k) && typeof v === 'function'
+        ? (v as GenericOptionFunction)(o)
+        : v
     return acc
   }, {})
 
-const serializeQuery = (q) =>
+const serializeQuery = (q: string | RequestOptionsFlat['options']) =>
   typeof q === 'string' ? q : qs.stringify(q, { strictNullHandling: true })
 
-export const getRequestOptions = (defaultOptions, localOptions) => {
-  const resolved = merge(
+export const getRequestOptions = (
+  defaultOptions: RequestOptions,
+  localOptions: RequestOptions
+): RequestOptionsFlat => {
+  const resolved: RequestOptionsFlat = merge(
     {},
     resolveFunctions(defaultOptions),
     resolveFunctions(localOptions)
@@ -37,7 +54,10 @@ export const getRequestOptions = (defaultOptions, localOptions) => {
   }
 }
 
-const createResponseObject = async (res, { parse = JSON.parse }) => {
+const createResponseObject = async (
+  res: Response,
+  { parse = JSON.parse }
+): Promise<ResponseObject> => {
   const text = await res.text()
   let body
   try {
@@ -49,19 +69,22 @@ const createResponseObject = async (res, { parse = JSON.parse }) => {
     ok: res.ok,
     status: res.status,
     headers: res.headers,
-    body, text
+    body,
+    text
   }
 }
-export default (defaultOptions, localOptions) => {
-  const options = getRequestOptions(defaultOptions, localOptions)
 
-  const qs = {
-    ...options.options,
-    includes: options.includes || options.options?.includes
-  }
+export default (
+  defaultOptions: RequestOptions,
+  localOptions: RequestOptions
+): RequestObject => {
+  const options = getRequestOptions(defaultOptions, localOptions)
+  const qs = options.options || {}
 
   // special handling needed for rewriting large queries
-  let stringQuery, rewriting = false, method = options.method
+  let stringQuery: string,
+    rewriting = false,
+    method = options.method
   if (Object.keys(qs).length !== 0) {
     stringQuery = serializeQuery(qs)
     if (stringQuery.length + options.url.length >= maxUrlLength) {
@@ -69,7 +92,9 @@ export default (defaultOptions, localOptions) => {
         method = 'post'
         rewriting = true
       } else {
-        console.warn('URL is longer than 4KB - this may cause issues! Try using rewriteLargeRequests.')
+        console.warn(
+          'URL is longer than 4KB - this may cause issues! Try using rewriteLargeRequests.'
+        )
       }
     }
   }
@@ -77,10 +102,10 @@ export default (defaultOptions, localOptions) => {
   const headers = { ...options.headers }
   if (rewriting) headers['X-HTTP-Method-Override'] = 'GET'
 
-  const controller = options.controller || new AbortController()
+  const controller = new AbortController()
   const { signal } = controller
 
-  const out = ky(options.url, {
+  const req = ky(options.url, {
     method,
     signal,
     hooks: options.hooks,
@@ -93,16 +118,21 @@ export default (defaultOptions, localOptions) => {
     json: rewriting ? qs : options.data,
     onDownloadProgress: options.onData
   })
+
+  const ret: RequestObject = req
     .then(async (res) => {
-      const out = await createResponseObject(res, { parse: options.parse })
-      if (options.simple) return out.body || out.text
-      return out
+      const out: ResponseObject = await createResponseObject(res, {
+        parse: options.parse
+      })
+      return options.simple ? out.body || out.text : out
     })
     .catch(async (err) => {
       if (err.response) {
         err.status = err.response.status
         try {
-          err.res = await createResponseObject(err.response, { parse: options.parse })
+          err.res = await createResponseObject(err.response, {
+            parse: options.parse
+          })
         } catch (_) {
           // ignore
         }
@@ -111,8 +141,7 @@ export default (defaultOptions, localOptions) => {
       throw err
     })
 
-  out.abort = (...a) => controller.abort(...a)
-  out.cancel = () => controller.abort()
+  ret.cancel = () => controller.abort()
 
-  return out
+  return ret
 }

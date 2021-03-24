@@ -1,4 +1,3 @@
-/*eslint no-console: 0*/
 import should from 'should'
 import sutro, { rewriteLargeRequests } from 'sutro'
 import express from 'express'
@@ -6,15 +5,18 @@ import bodyParser from 'body-parser'
 import compress from 'compression'
 import getPort from 'get-port'
 import createClient from '../src/node'
+import { Server } from 'node:http'
+import { Resources } from '../src/typings'
 
 const bigUrlLength = 512000
+const defaultOption = { options: { error: undefined } }
 
 const resources = {
   user: {
     create: async ({ data }) => data,
-    find: async ({ options = {} } = {}) => {
+    find: async ({ options } = defaultOption) => {
       if (options.error) throw new Error('Heh')
-      return [ { id: '123' } ]
+      return [{ id: '123' }]
     },
     findById: async ({ userId }) => ({ id: userId }),
     updateById: async ({ userId, data }) => ({ ...data, id: userId }),
@@ -24,33 +26,36 @@ const resources = {
     friend: {
       create: async ({ userId, data }) => ({
         id: userId,
-        friends: [ data.id ]
+        friends: [data.id]
       }),
       find: async ({ userId }) => [
-        { id: '123', friends: [ userId ] },
-        { id: '456', friends: [ userId ] }
+        { id: '123', friends: [userId] },
+        { id: '456', friends: [userId] }
       ],
       findById: async ({ userId, friendId }) => ({
         id: friendId,
-        friends: [ userId ]
+        friends: [userId]
       })
     }
   }
 }
-let port, app, server, http, client
+const server = sutro({
+  base: '/api',
+  resources
+})
+const app = express()
+app.use(rewriteLargeRequests)
+app.use(bodyParser.json({ limit: '1mb' }))
+app.use(compress())
+app.use('/api', server)
+
+let port: number
+let http: Server
+let client: Resources
 
 describe('sutro-client', () => {
   before(async () => {
     port = await getPort()
-    app = express()
-    server = sutro({
-      base: '/api',
-      resources
-    })
-    app.use(rewriteLargeRequests)
-    app.use(bodyParser.json({ limit: '1mb' }))
-    app.use(compress())
-    app.use('/api', server)
     http = app.listen(port)
     client = createClient(server.meta, {
       root: `http://localhost:${port}`
@@ -144,12 +149,6 @@ describe('sutro-client', () => {
     const res = client.user.friend.findById(options)
     res.cancel()
   })
-  it('should allow aborting', async () => {
-    const options = { userId: '123', friendId: '456', simple: true }
-    const res = client.user.friend.findById(options)
-    res.abort()
-  })
-
   it('should report errors properly', (done) => {
     client.user.find({ options: { error: true } }).catch((err) => {
       should.exist(err)

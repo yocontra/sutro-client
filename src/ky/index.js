@@ -1,7 +1,5 @@
 /*! MIT License © Sindre Sorhus */
-import qs from 'qs'
-
-// Adds a basic globalThis fix, uses regular qs formatter, and fixes an issue with QS being messed with
+// Adds a basic globalThis fix
 
 const globalThis = typeof window === 'undefined' ? global : window
 const isObject = (value) => value !== null && typeof value === 'object'
@@ -14,8 +12,8 @@ const mergeHeaders = (source1, source2) => {
   const isHeadersInstance = source2 instanceof globalThis.Headers
   const source = new globalThis.Headers(source2 || {})
 
-  for (const [ key, value ] of source) {
-    if (isHeadersInstance && value === 'undefined' || value === undefined) {
+  for (const [key, value] of source) {
+    if ((isHeadersInstance && value === 'undefined') || value === undefined) {
       result.delete(key)
     } else {
       result.set(key, value)
@@ -35,9 +33,9 @@ const deepMerge = (...sources) => {
         returnValue = []
       }
 
-      returnValue = [ ...returnValue, ...source ]
+      returnValue = [...returnValue, ...source]
     } else if (isObject(source)) {
-      for (let [ key, value ] of Object.entries(source)) {
+      for (let [key, value] of Object.entries(source)) {
         if (isObject(value) && key in returnValue) {
           value = deepMerge(returnValue[key], value)
         }
@@ -56,14 +54,7 @@ const deepMerge = (...sources) => {
   return returnValue
 }
 
-const requestMethods = [
-  'get',
-  'post',
-  'put',
-  'patch',
-  'head',
-  'delete'
-]
+const requestMethods = ['get', 'post', 'put', 'patch', 'head', 'delete']
 
 const responseTypes = {
   json: 'application/json',
@@ -73,30 +64,11 @@ const responseTypes = {
   blob: '*/*'
 }
 
-const retryMethods = [
-  'get',
-  'put',
-  'head',
-  'delete',
-  'options',
-  'trace'
-]
+const retryMethods = ['get', 'put', 'head', 'delete', 'options', 'trace']
 
-const retryStatusCodes = [
-  408,
-  413,
-  429,
-  500,
-  502,
-  503,
-  504
-]
+const retryStatusCodes = [408, 413, 429, 500, 502, 503, 504]
 
-const retryAfterStatusCodes = [
-  413,
-  429,
-  503
-]
+const retryAfterStatusCodes = [413, 429, 503]
 
 const stop = Symbol('stop')
 
@@ -106,10 +78,11 @@ class HTTPError extends Error {
     // with some fallbacks. This message should never be undefined.
     super(
       response.statusText ||
-			String(
-			  response.status === 0 || response.status ?
-			    response.status : 'Unknown response error'
-			)
+        String(
+          response.status === 0 || response.status
+            ? response.status
+            : 'Unknown response error'
+        )
     )
     this.name = 'HTTPError'
     this.response = response
@@ -140,7 +113,8 @@ const timeout = (request, abortController, options) =>
     }, options.timeout)
 
     /* eslint-disable promise/prefer-await-to-then */
-    options.fetch(request)
+    options
+      .fetch(request)
       .then(resolve)
       .catch(reject)
       .then(() => {
@@ -149,7 +123,8 @@ const timeout = (request, abortController, options) =>
     /* eslint-enable promise/prefer-await-to-then */
   })
 
-const normalizeRequestMethod = (input) => requestMethods.includes(input) ? input.toUpperCase() : input
+const normalizeRequestMethod = (input) =>
+  requestMethods.includes(input) ? input.toUpperCase() : input
 
 const defaultRetryOptions = {
   limit: 2,
@@ -193,11 +168,14 @@ class Ky {
       credentials: this._input.credentials || 'same-origin',
       ...options,
       headers: mergeHeaders(this._input.headers, options.headers),
-      hooks: deepMerge({
-        beforeRequest: [],
-        beforeRetry: [],
-        afterResponse: []
-      }, options.hooks),
+      hooks: deepMerge(
+        {
+          beforeRequest: [],
+          beforeRetry: [],
+          afterResponse: []
+        },
+        options.hooks
+      ),
       method: normalizeRequestMethod(options.method || this._input.method),
       prefixUrl: String(options.prefixUrl || ''),
       retry: normalizeRetryOptions(options.retry),
@@ -206,13 +184,18 @@ class Ky {
       fetch: options.fetch || globalThis.fetch.bind(globalThis)
     }
 
-    if (typeof this._input !== 'string' && !(this._input instanceof URL || this._input instanceof globalThis.Request)) {
+    if (
+      typeof this._input !== 'string' &&
+      !(this._input instanceof URL || this._input instanceof globalThis.Request)
+    ) {
       throw new TypeError('`input` must be a string, URL, or Request')
     }
 
     if (this._options.prefixUrl && typeof this._input === 'string') {
       if (this._input.startsWith('/')) {
-        throw new Error('`input` must not begin with a slash when using `prefixUrl`')
+        throw new Error(
+          '`input` must not begin with a slash when using `prefixUrl`'
+        )
       }
 
       if (!this._options.prefixUrl.endsWith('/')) {
@@ -236,28 +219,42 @@ class Ky {
     this.request = new globalThis.Request(this._input, this._options)
 
     if (this._options.searchParams) {
-      const searchParams = typeof this._options.searchParams === 'string'
-        ? `?${this._options.searchParams}`
-        : `?${qs.stringify(this._options.searchParams, { strictNullHandling: true })}`
+      const textSearchParams =
+        typeof this._options.searchParams === 'string'
+          ? this._options.searchParams.replace(/^\?/, '')
+          : new URLSearchParams(this._options.searchParams).toString()
+      const searchParams = '?' + textSearchParams
       const url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams)
 
       // To provide correct form boundary, Content-Type header should be deleted each time when new Request instantiated from another one
-      if ((supportsFormData && this._options.body instanceof globalThis.FormData || this._options.body instanceof URLSearchParams) && !(this._options.headers && this._options.headers['content-type'])) {
+      if (
+        ((supportsFormData &&
+          this._options.body instanceof globalThis.FormData) ||
+          this._options.body instanceof URLSearchParams) &&
+        !(this._options.headers && this._options.headers['content-type'])
+      ) {
         this.request.headers.delete('content-type')
       }
 
-      this.request = new globalThis.Request(new globalThis.Request(url, this.request), this._options)
+      this.request = new globalThis.Request(
+        new globalThis.Request(url, this.request),
+        this._options
+      )
     }
 
     if (this._options.json !== undefined) {
       this._options.body = JSON.stringify(this._options.json)
       this.request.headers.set('content-type', 'application/json')
-      this.request = new globalThis.Request(this.request, { body: this._options.body })
+      this.request = new globalThis.Request(this.request, {
+        body: this._options.body
+      })
     }
 
     const fn = async () => {
       if (this._options.timeout > maxSafeTimeout) {
-        throw new RangeError(`The \`timeout\` option cannot be greater than ${maxSafeTimeout}`)
+        throw new RangeError(
+          `The \`timeout\` option cannot be greater than ${maxSafeTimeout}`
+        )
       }
 
       await delay(1)
@@ -286,11 +283,15 @@ class Ky {
       /* istanbul ignore next */
       if (this._options.onDownloadProgress) {
         if (typeof this._options.onDownloadProgress !== 'function') {
-          throw new TypeError('The `onDownloadProgress` option must be a function')
+          throw new TypeError(
+            'The `onDownloadProgress` option must be a function'
+          )
         }
 
         if (!supportsStreams) {
-          throw new Error('Streams are not supported in your environment. `ReadableStream` is missing.')
+          throw new Error(
+            'Streams are not supported in your environment. `ReadableStream` is missing.'
+          )
         }
 
         return this._stream(response.clone(), this._options.onDownloadProgress)
@@ -299,12 +300,17 @@ class Ky {
       return response
     }
 
-    const isRetriableMethod = this._options.retry.methods.includes(this.request.method.toLowerCase())
+    const isRetriableMethod = this._options.retry.methods.includes(
+      this.request.method.toLowerCase()
+    )
     const result = isRetriableMethod ? this._retry(fn) : fn()
 
-    for (const [ type, mimeType ] of Object.entries(responseTypes)) {
+    for (const [type, mimeType] of Object.entries(responseTypes)) {
       result[type] = async () => {
-        this.request.headers.set('accept', this.request.headers.get('accept') || mimeType)
+        this.request.headers.set(
+          'accept',
+          this.request.headers.get('accept') || mimeType
+        )
 
         const response = (await result).clone()
 
@@ -328,14 +334,20 @@ class Ky {
   _calculateRetryDelay(error) {
     this._retryCount++
 
-    if (this._retryCount < this._options.retry.limit && !(error instanceof TimeoutError)) {
+    if (
+      this._retryCount < this._options.retry.limit &&
+      !(error instanceof TimeoutError)
+    ) {
       if (error instanceof HTTPError) {
         if (!this._options.retry.statusCodes.includes(error.response.status)) {
           return 0
         }
 
         const retryAfter = error.response.headers.get('Retry-After')
-        if (retryAfter && this._options.retry.afterStatusCodes.includes(error.response.status)) {
+        if (
+          retryAfter &&
+          this._options.retry.afterStatusCodes.includes(error.response.status)
+        ) {
           let after = Number(retryAfter)
           if (Number.isNaN(after)) {
             after = Date.parse(retryAfter) - Date.now()
@@ -343,7 +355,10 @@ class Ky {
             after *= 1000
           }
 
-          if (typeof this._options.retry.maxRetryAfter !== 'undefined' && after > this._options.retry.maxRetryAfter) {
+          if (
+            typeof this._options.retry.maxRetryAfter !== 'undefined' &&
+            after > this._options.retry.maxRetryAfter
+          ) {
             return 0
           }
 
@@ -435,7 +450,10 @@ class Ky {
           const reader = response.body.getReader()
 
           if (onDownloadProgress) {
-            onDownloadProgress({ percent: 0, transferredBytes: 0, totalBytes }, new Uint8Array())
+            onDownloadProgress(
+              { percent: 0, transferredBytes: 0, totalBytes },
+              new Uint8Array()
+            )
           }
 
           async function read() {
@@ -447,8 +465,12 @@ class Ky {
 
             if (onDownloadProgress) {
               transferredBytes += value.byteLength
-              const percent = totalBytes === 0 ? 0 : transferredBytes / totalBytes
-              onDownloadProgress({ percent, transferredBytes, totalBytes }, value)
+              const percent =
+                totalBytes === 0 ? 0 : transferredBytes / totalBytes
+              onDownloadProgress(
+                { percent, transferredBytes, totalBytes },
+                value
+              )
             }
 
             controller.enqueue(value)
@@ -464,7 +486,10 @@ class Ky {
 
 const validateAndMerge = (...sources) => {
   for (const source of sources) {
-    if ((!isObject(source) || Array.isArray(source)) && typeof source !== 'undefined') {
+    if (
+      (!isObject(source) || Array.isArray(source)) &&
+      typeof source !== 'undefined'
+    ) {
       throw new TypeError('The `options` argument must be an object')
     }
   }
@@ -473,16 +498,19 @@ const validateAndMerge = (...sources) => {
 }
 
 const createInstance = (defaults) => {
-  const ky = (input, options) => new Ky(input, validateAndMerge(defaults, options))
+  const ky = (input, options) =>
+    new Ky(input, validateAndMerge(defaults, options))
 
   for (const method of requestMethods) {
-    ky[method] = (input, options) => new Ky(input, validateAndMerge(defaults, options, { method }))
+    ky[method] = (input, options) =>
+      new Ky(input, validateAndMerge(defaults, options, { method }))
   }
 
   ky.HTTPError = HTTPError
   ky.TimeoutError = TimeoutError
   ky.create = (newDefaults) => createInstance(validateAndMerge(newDefaults))
-  ky.extend = (newDefaults) => createInstance(validateAndMerge(defaults, newDefaults))
+  ky.extend = (newDefaults) =>
+    createInstance(validateAndMerge(defaults, newDefaults))
   ky.stop = stop
 
   return ky
@@ -490,4 +518,4 @@ const createInstance = (defaults) => {
 
 const ky = createInstance()
 
-export default ky
+module.exports = ky
