@@ -58,6 +58,6 @@ export type Resource = (() => RequestObject) & {
   getOptions: () => RequestOptions
 }
 
-export type Resources<O> = {
-  [K in keyof O]: O[K] extends ResourceDescriptor ? Resource : Resources<O[K]>
+export type Resources = {
+  [key: string]: any // TODO: this type was impossible to get working in TS
 }

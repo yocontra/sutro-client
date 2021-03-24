@@ -49,6 +49,6 @@ export declare type RequestObject = Promise<ResponseObject | ResponseObjectSimpl
 export declare type Resource = (() => RequestObject) & {
     getOptions: () => RequestOptions;
 };
-export declare type Resources<O> = {
-    [K in keyof O]: O[K] extends ResourceDescriptor ? Resource : Resources<O[K]>;
+export declare type Resources = {
+    [key: string]: any;
 };

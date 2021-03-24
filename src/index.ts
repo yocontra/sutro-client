@@ -1,19 +1,11 @@
 import combineUrl from './combineUrl'
 import sendRequest, { getRequestOptions } from './sendRequest'
-import {
-  RequestOptions,
-  ServerMeta,
-  Resource,
-  Resources,
-  ResourceDescriptor
-} from './typings'
+import { RequestOptions, ServerMeta, Resource, Resources } from './typings'
 
-const replaceWithPromises = <
-  O extends Record<any, ResourceDescriptor | ServerMeta>
->(
-  obj: O,
+const replaceWithPromises = (
+  obj: ServerMeta,
   globalOptions: RequestOptions
-): Resources<O> =>
+): Resources =>
   Object.entries(obj).reduce((acc, [k, v]) => {
     // nested, recurse
     if (!v.path || !v.method) {

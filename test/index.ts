@@ -6,7 +6,7 @@ import compress from 'compression'
 import getPort from 'get-port'
 import createClient from '../src/node'
 import { Server } from 'node:http'
-import { Resources, ServerMeta } from '../src/typings'
+import { Resources } from '../src/typings'
 
 const bigUrlLength = 512000
 const defaultOption = { options: { error: undefined } }
@@ -51,7 +51,7 @@ app.use('/api', server)
 
 let port: number
 let http: Server
-let client: Resources<typeof server.meta>
+let client: Resources
 
 describe('sutro-client', () => {
   before(async () => {
