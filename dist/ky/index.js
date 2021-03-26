@@ -1,5 +1,7 @@
 /*! MIT License © Sindre Sorhus */
-// Adds a basic globalThis fix
+// Adds a basic globalThis fix, serialize searchParams w/ qs
+
+const qs = require('qs')
 
 const globalThis = typeof window === 'undefined' ? global : window
 const isObject = (value) => value !== null && typeof value === 'object'
@@ -222,7 +224,7 @@ class Ky {
       const textSearchParams =
         typeof this._options.searchParams === 'string'
           ? this._options.searchParams.replace(/^\?/, '')
-          : new URLSearchParams(this._options.searchParams).toString()
+          : qs.stringify(this._options.searchParams, { strictNullHandling: true })
       const searchParams = '?' + textSearchParams
       const url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams)
 
