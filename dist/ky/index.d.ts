@@ -1,4 +1,4 @@
-import QueryString from "qs"
+import QueryString from 'qs'
 
 type Primitive = null | undefined | string | number | boolean | symbol | bigint
 
