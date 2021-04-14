@@ -224,7 +224,9 @@ class Ky {
       const textSearchParams =
         typeof this._options.searchParams === 'string'
           ? this._options.searchParams.replace(/^\?/, '')
-          : qs.stringify(this._options.searchParams, { strictNullHandling: true })
+          : qs.stringify(this._options.searchParams, {
+              strictNullHandling: true
+            })
       const searchParams = '?' + textSearchParams
       const url = this.request.url.replace(/(?:\?.*?)?(?=#|$)/, searchParams)
 

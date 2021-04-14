@@ -1,3 +1,5 @@
+import QueryString from "qs"
+
 type Primitive = null | undefined | string | number | boolean | symbol | bigint
 
 type LiteralUnion<LiteralType extends BaseType, BaseType extends Primitive> =
@@ -236,11 +238,7 @@ export interface Options extends Omit<RequestInit, 'headers'> {
 
 	Accepts any value supported by [`URLSearchParams()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams).
 	*/
-  searchParams?:
-    | string
-    | { [key: string]: string | number | boolean }
-    | Array<Array<string | number | boolean>>
-    | URLSearchParams
+  searchParams?: any
 
   /**
 	A prefix to prepend to the `input` URL when making the request. It can be any valid URL, either relative or absolute. A trailing slash `/` is optional and will be added automatically, if needed, when it is joined with `input`. Only takes effect when `input` is a string. The `input` argument cannot start with a slash `/` when using this option.
